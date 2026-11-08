@@ -6,8 +6,6 @@
   <title>DreamWin - Fantasy Cricket & Mini Games</title>
   <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Lucide Icons -->
-  <script src="https://unpkg.com/lucide@latest"></script>
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <!-- Canvas Confetti -->
@@ -44,12 +42,41 @@
     ::-webkit-scrollbar { width: 6px; }
     ::-webkit-scrollbar-track { background: #0B132B; }
     ::-webkit-scrollbar-thumb { background: #3A506B; border-radius: 3px; }
+    @keyframes spinSlow {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .animate-spin-slow {
+      animation: spinSlow 8s linear infinite;
+    }
   </style>
 </head>
 <body class="min-h-screen flex justify-center bg-slate-950">
 
-  <!-- AUTHENTICATION SCREEN (LOGIN / REGISTER) -->
-  <div id="auth-screen" class="w-full max-w-md bg-brand-navy min-h-screen flex flex-col justify-center p-6 shadow-2xl relative overflow-hidden z-50">
+  <!-- WELCOME SPLASH SCREEN (NAMASTE SCREEN) -->
+  <div id="welcome-screen" class="w-full max-w-md bg-brand-navy min-h-screen flex flex-col justify-between p-6 shadow-2xl relative overflow-hidden z-50 text-center">
+    <div class="my-auto space-y-6">
+      <div class="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-tr from-brand-red to-orange-500 rounded-full shadow-2xl border-4 border-brand-gold animate-bounce">
+        <span class="text-4xl">🙏</span>
+      </div>
+      <div>
+        <h1 class="text-4xl font-black text-brand-gold mb-1 tracking-wide">नमस्ते!</h1>
+        <h2 class="text-2xl font-extrabold text-white">DreamWin में आपका स्वागत है</h2>
+        <p class="text-xs text-gray-400 mt-2 px-4">खेलें फैंटेसी क्रिकेट और मिनी गेम्स, जीतें ढेरों कॉइन्स!</p>
+      </div>
+      <div class="pt-4">
+        <button onclick="showAuthScreen()" class="w-full bg-gradient-to-r from-brand-red to-brand-darkRed hover:from-red-600 hover:to-red-800 text-white font-extrabold py-3.5 rounded-2xl shadow-xl text-base tracking-wide transition transform active:scale-95 cursor-pointer">
+          आगे बढ़ें (Continue) <i class="fa-solid fa-arrow-right ml-2"></i>
+        </button>
+      </div>
+    </div>
+    <div class="pb-4 text-slate-500 text-[11px] font-semibold">
+      100% Safe & Secure Gaming Platform
+    </div>
+  </div>
+
+  <!-- AUTHENTICATION SCREEN (LOGIN / REGISTER WITH OTP) -->
+  <div id="auth-screen" class="w-full max-w-md bg-brand-navy min-h-screen flex flex-col justify-center p-6 shadow-2xl relative overflow-hidden z-50 hidden">
     <div class="text-center mb-6">
       <div class="inline-flex items-center justify-center w-16 h-16 bg-brand-red rounded-full shadow-lg mb-2">
         <i class="fa-solid fa-trophy text-brand-gold text-3xl"></i>
@@ -58,39 +85,70 @@
       <p class="text-xs text-gray-400 mt-1">Khel Khelo, Coins & Cash Jeeto</p>
     </div>
 
-    <div class="flex bg-slate-900 rounded-xl p-1 mb-4 border border-slate-800">
-      <button onclick="switchAuthTab('login')" id="auth-tab-login" class="flex-1 py-2 text-xs font-bold rounded-lg bg-brand-red text-white transition">Login</button>
-      <button onclick="switchAuthTab('register')" id="auth-tab-register" class="flex-1 py-2 text-xs font-bold rounded-lg text-gray-400 transition">Register</button>
+    <!-- Step 1: Phone / Password Form -->
+    <div id="auth-step-credentials">
+      <div class="flex bg-slate-900 rounded-xl p-1 mb-4 border border-slate-800">
+        <button onclick="switchAuthTab('login')" id="auth-tab-login" class="flex-1 py-2 text-xs font-bold rounded-lg bg-brand-red text-white transition">Login</button>
+        <button onclick="switchAuthTab('register')" id="auth-tab-register" class="flex-1 py-2 text-xs font-bold rounded-lg text-gray-400 transition">Register</button>
+      </div>
+
+      <!-- Login Form -->
+      <div id="form-login" class="space-y-3">
+        <div>
+          <label class="text-xs text-gray-400">Mobile Number</label>
+          <input type="tel" id="login-phone" placeholder="Enter mobile number" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white text-sm mt-1 focus:outline-none focus:border-brand-gold">
+        </div>
+        <div>
+          <label class="text-xs text-gray-400">Password</label>
+          <input type="password" id="login-pass" placeholder="Enter password" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white text-sm mt-1 focus:outline-none focus:border-brand-gold">
+        </div>
+        <button onclick="sendOTP('login')" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-3 rounded-xl text-sm shadow-lg mt-2 cursor-pointer flex items-center justify-center gap-2">
+          <span>Get OTP & Login</span> <i class="fa-solid fa-paper-plane text-xs"></i>
+        </button>
+      </div>
+
+      <!-- Register Form -->
+      <div id="form-register" class="space-y-3 hidden">
+        <div>
+          <label class="text-xs text-gray-400">Full Name</label>
+          <input type="text" id="reg-name" placeholder="Enter your name" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white text-sm mt-1 focus:outline-none focus:border-brand-gold">
+        </div>
+        <div>
+          <label class="text-xs text-gray-400">Mobile Number</label>
+          <input type="tel" id="reg-phone" placeholder="Enter mobile number" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white text-sm mt-1 focus:outline-none focus:border-brand-gold">
+        </div>
+        <div>
+          <label class="text-xs text-gray-400">Create Password</label>
+          <input type="password" id="reg-pass" placeholder="Create password" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white text-sm mt-1 focus:outline-none focus:border-brand-gold">
+        </div>
+        <button onclick="sendOTP('register')" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg mt-2 cursor-pointer flex items-center justify-center gap-2">
+          <span>Get OTP & Register</span> <i class="fa-solid fa-paper-plane text-xs"></i>
+        </button>
+      </div>
     </div>
 
-    <!-- Login Form -->
-    <div id="form-login" class="space-y-3">
-      <div>
-        <label class="text-xs text-gray-400">Mobile Number</label>
-        <input type="tel" id="login-phone" placeholder="Enter mobile number" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white text-sm mt-1 focus:outline-none focus:border-brand-gold">
-      </div>
-      <div>
-        <label class="text-xs text-gray-400">Password</label>
-        <input type="password" id="login-pass" placeholder="Enter password" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white text-sm mt-1 focus:outline-none focus:border-brand-gold">
-      </div>
-      <button onclick="handleLogin()" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-3 rounded-xl text-sm shadow-lg mt-2">Login to DreamWin</button>
-    </div>
+    <!-- Step 2: OTP Verification Box -->
+    <div id="auth-step-otp" class="space-y-4 hidden">
+      <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 text-center space-y-3">
+        <h3 class="text-base font-bold text-white">OTP Verification 📲</h3>
+        <p class="text-xs text-gray-400">Mobile <span id="otp-phone-display" class="text-brand-gold font-bold"></span> par OTP bheja gaya hai</p>
+        
+        <div class="bg-amber-500/10 border border-amber-500/30 rounded-xl p-2 text-amber-300 text-xs font-mono font-bold">
+          Demo OTP Code: <span id="otp-demo-code" class="text-white underline">123456</span>
+        </div>
 
-    <!-- Register Form -->
-    <div id="form-register" class="space-y-3 hidden">
-      <div>
-        <label class="text-xs text-gray-400">Full Name</label>
-        <input type="text" id="reg-name" placeholder="Enter your name" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white text-sm mt-1 focus:outline-none focus:border-brand-gold">
+        <div>
+          <input type="text" id="otp-input" maxlength="6" placeholder="Enter 6-digit OTP" class="w-full bg-slate-950 border border-slate-700 rounded-xl px-3 py-3 text-center text-white font-black tracking-widest text-lg focus:outline-none focus:border-brand-gold">
+        </div>
+
+        <button onclick="verifyOTP()" class="w-full bg-green-600 hover:bg-green-500 text-white font-extrabold py-3 rounded-xl text-sm shadow-lg cursor-pointer">
+          Verify OTP & Continue
+        </button>
+
+        <button onclick="backToAuthCredentials()" class="text-xs text-gray-400 hover:text-white underline cursor-pointer pt-2">
+          Change Mobile Number
+        </button>
       </div>
-      <div>
-        <label class="text-xs text-gray-400">Mobile Number</label>
-        <input type="tel" id="reg-phone" placeholder="Enter mobile number" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white text-sm mt-1 focus:outline-none focus:border-brand-gold">
-      </div>
-      <div>
-        <label class="text-xs text-gray-400">Create Password</label>
-        <input type="password" id="reg-pass" placeholder="Create password" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2.5 text-white text-sm mt-1 focus:outline-none focus:border-brand-gold">
-      </div>
-      <button onclick="handleRegister()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg mt-2">Create Account & Get 500 Coins</button>
     </div>
   </div>
 
@@ -109,7 +167,7 @@
         </div>
 
         <!-- Coins Wallet Display -->
-        <div class="bg-slate-900/80 border border-gold/30 rounded-xl px-3 py-1.5 flex items-center space-x-2 cursor-pointer" onclick="openDepositModal()">
+        <div class="bg-slate-900/80 border border-amber-400/30 rounded-xl px-3 py-1.5 flex items-center space-x-2 cursor-pointer" onclick="openDepositModal()">
           <i class="fa-solid fa-coins text-brand-gold animate-spin-slow"></i>
           <div>
             <p class="text-[9px] text-gray-400 font-bold uppercase">My Coins</p>
@@ -152,39 +210,39 @@
         </div>
 
         <div class="grid grid-cols-2 gap-3">
-          <div onclick="openGame('spin')" class="bg-brand-card hover:border-brand-gold border border-slate-700 rounded-2xl p-4 flex flex-col items-center justify-center text-center cursor-pointer transition transform active:scale-95 shadow-md">
+          <div onclick="openGame('dragon')" class="bg-brand-card hover:border-brand-gold border border-slate-700 rounded-2xl p-4 flex flex-col items-center justify-center text-center cursor-pointer transition transform active:scale-95 shadow-md">
+            <div class="w-14 h-14 bg-red-500/20 text-red-400 rounded-full flex items-center justify-center text-2xl mb-2">
+              🐲 vs 🐯
+            </div>
+            <h4 class="font-bold text-sm text-white">Dragon vs Tiger</h4>
+            <p class="text-[11px] text-gray-400 mt-1">Dragon ya Tiger chunen (Lowest Bet Wins!)</p>
+            <span class="mt-2 text-[10px] bg-red-500/20 text-red-300 font-bold px-2.5 py-0.5 rounded-full">PLAY NOW</span>
+          </div>
+
+          <div onclick="openGame('bigsmall')" class="bg-brand-card hover:border-brand-gold border border-slate-700 rounded-2xl p-4 flex flex-col items-center justify-center text-center cursor-pointer transition transform active:scale-95 shadow-md">
             <div class="w-14 h-14 bg-amber-500/20 text-amber-400 rounded-full flex items-center justify-center text-2xl mb-2">
+              <i class="fa-solid fa-dice"></i>
+            </div>
+            <h4 class="font-bold text-sm text-white">Big / Small</h4>
+            <p class="text-[11px] text-gray-400 mt-1">Bada ya Chhota (Lowest Bet Wins!)</p>
+            <span class="mt-2 text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2.5 py-0.5 rounded-full">PLAY NOW</span>
+          </div>
+
+          <div onclick="openGame('spin')" class="bg-brand-card hover:border-brand-gold border border-slate-700 rounded-2xl p-4 flex flex-col items-center justify-center text-center cursor-pointer transition transform active:scale-95 shadow-md">
+            <div class="w-14 h-14 bg-yellow-500/20 text-yellow-400 rounded-full flex items-center justify-center text-2xl mb-2">
               <i class="fa-solid fa-circle-notch animate-spin"></i>
             </div>
             <h4 class="font-bold text-sm text-white">Spin & Win</h4>
             <p class="text-[11px] text-gray-400 mt-1">Ghumao chakki, jeeto coins!</p>
-            <span class="mt-2 text-[10px] bg-amber-500/20 text-amber-300 font-bold px-2.5 py-0.5 rounded-full">PLAY NOW</span>
+            <span class="mt-2 text-[10px] bg-yellow-500/20 text-yellow-300 font-bold px-2.5 py-0.5 rounded-full">PLAY NOW</span>
           </div>
 
           <div onclick="openGame('toss')" class="bg-brand-card hover:border-brand-gold border border-slate-700 rounded-2xl p-4 flex flex-col items-center justify-center text-center cursor-pointer transition transform active:scale-95 shadow-md">
-            <div class="w-14 h-14 bg-yellow-500/20 text-yellow-400 rounded-full flex items-center justify-center text-2xl mb-2">
+            <div class="w-14 h-14 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center text-2xl mb-2">
               <i class="fa-solid fa-coins"></i>
             </div>
             <h4 class="font-bold text-sm text-white">Head or Tail</h4>
             <p class="text-[11px] text-gray-400 mt-1">Predict karo aur 2x coins pao</p>
-            <span class="mt-2 text-[10px] bg-yellow-500/20 text-yellow-300 font-bold px-2.5 py-0.5 rounded-full">PLAY NOW</span>
-          </div>
-
-          <div onclick="openGame('bigsmall')" class="bg-brand-card hover:border-brand-gold border border-slate-700 rounded-2xl p-4 flex flex-col items-center justify-center text-center cursor-pointer transition transform active:scale-95 shadow-md">
-            <div class="w-14 h-14 bg-red-500/20 text-red-400 rounded-full flex items-center justify-center text-2xl mb-2">
-              <i class="fa-solid fa-dice"></i>
-            </div>
-            <h4 class="font-bold text-sm text-white">Big / Small</h4>
-            <p class="text-[11px] text-gray-400 mt-1">1 se 1000 Coins tak bet</p>
-            <span class="mt-2 text-[10px] bg-red-500/20 text-red-300 font-bold px-2.5 py-0.5 rounded-full">PLAY NOW</span>
-          </div>
-
-          <div onclick="openGame('tictactoe')" class="bg-brand-card hover:border-brand-gold border border-slate-700 rounded-2xl p-4 flex flex-col items-center justify-center text-center cursor-pointer transition transform active:scale-95 shadow-md">
-            <div class="w-14 h-14 bg-emerald-500/20 text-emerald-400 rounded-full flex items-center justify-center text-2xl mb-2">
-              <i class="fa-solid fa-xmark"></i>
-            </div>
-            <h4 class="font-bold text-sm text-white">Tic-Tac-Toe</h4>
-            <p class="text-[11px] text-gray-400 mt-1">AI ko हराओ, coins pao</p>
             <span class="mt-2 text-[10px] bg-emerald-500/20 text-emerald-300 font-bold px-2.5 py-0.5 rounded-full">PLAY NOW</span>
           </div>
         </div>
@@ -217,7 +275,7 @@
               <span class="inline-block mt-1 bg-green-500/20 text-green-400 text-[10px] font-bold px-2 py-0.5 rounded-full">KYC Verified</span>
             </div>
           </div>
-          <button onclick="handleLogout()" class="bg-red-500/20 text-red-400 border border-red-500/30 text-xs px-3 py-1.5 rounded-xl font-bold">Logout</button>
+          <button onclick="handleLogout()" class="bg-red-500/20 text-red-400 border border-red-500/30 text-xs px-3 py-1.5 rounded-xl font-bold cursor-pointer">Logout</button>
         </div>
 
         <!-- Wallet Card with Deposit & Withdrawal -->
@@ -229,10 +287,10 @@
               <p class="text-[10px] text-gray-400">Value: ₹<span id="wallet-inr">500</span> (1 Coin = ₹1)</p>
             </div>
             <div class="flex gap-2">
-              <button onclick="openDepositModal()" class="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-2 rounded-xl font-bold flex items-center gap-1 shadow">
+              <button onclick="openDepositModal()" class="bg-green-600 hover:bg-green-700 text-white text-xs px-3 py-2 rounded-xl font-bold flex items-center gap-1 shadow cursor-pointer">
                 <i class="fa-solid fa-plus text-[10px]"></i> Deposit
               </button>
-              <button onclick="openWithdrawModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-2 rounded-xl font-bold shadow">
+              <button onclick="openWithdrawModal()" class="bg-slate-700 hover:bg-slate-600 text-white text-xs px-3 py-2 rounded-xl font-bold shadow cursor-pointer">
                 Withdraw
               </button>
             </div>
@@ -250,19 +308,19 @@
     <!-- BOTTOM NAVIGATION -->
     <nav class="bg-slate-900/95 border-t border-slate-800 fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md z-40 px-3 py-2">
       <div class="flex justify-around items-center text-center">
-        <button onclick="switchTab('fantasy')" id="nav-fantasy" class="nav-btn text-brand-red flex flex-col items-center">
+        <button onclick="switchTab('fantasy')" id="nav-fantasy" class="nav-btn text-brand-red flex flex-col items-center cursor-pointer">
           <i class="fa-solid fa-cricket-bat-ball text-lg"></i>
           <span class="text-[10px] font-bold mt-1">Fantasy</span>
         </button>
-        <button onclick="switchTab('games')" id="nav-games" class="nav-btn text-gray-400 flex flex-col items-center">
+        <button onclick="switchTab('games')" id="nav-games" class="nav-btn text-gray-400 flex flex-col items-center cursor-pointer">
           <i class="fa-solid fa-gamepad text-lg"></i>
           <span class="text-[10px] font-bold mt-1">Mini Games</span>
         </button>
-        <button onclick="switchTab('contests')" id="nav-contests" class="nav-btn text-gray-400 flex flex-col items-center">
+        <button onclick="switchTab('contests')" id="nav-contests" class="nav-btn text-gray-400 flex flex-col items-center cursor-pointer">
           <i class="fa-solid fa-trophy text-lg"></i>
           <span class="text-[10px] font-bold mt-1">My Contests</span>
         </button>
-        <button onclick="switchTab('profile')" id="nav-profile" class="nav-btn text-gray-400 flex flex-col items-center">
+        <button onclick="switchTab('profile')" id="nav-profile" class="nav-btn text-gray-400 flex flex-col items-center cursor-pointer">
           <i class="fa-solid fa-user text-lg"></i>
           <span class="text-[10px] font-bold mt-1">Profile</span>
         </button>
@@ -274,7 +332,7 @@
       <div class="bg-brand-navy w-full max-w-md rounded-t-3xl sm:rounded-2xl p-4 space-y-4 max-h-[85vh] overflow-y-auto border-t border-slate-700">
         <div class="flex justify-between items-center border-b border-slate-800 pb-2">
           <div id="pool-match-title" class="font-bold text-sm text-white">IND vs PAK</div>
-          <button onclick="closeModal('modal-contest-pool')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+          <button onclick="closeModal('modal-contest-pool')" class="text-gray-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
         <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400">Select Contest Pool</h3>
         <div id="contest-pool-list" class="space-y-3"></div>
@@ -286,19 +344,19 @@
       <div class="bg-brand-navy w-full max-w-md rounded-t-3xl sm:rounded-2xl p-4 space-y-4 border-t border-slate-700">
         <div class="flex justify-between items-center border-b border-slate-800 pb-2">
           <h3 class="font-bold text-sm text-white">Deposit Money & Get Coins</h3>
-          <button onclick="closeModal('modal-deposit')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+          <button onclick="closeModal('modal-deposit')" class="text-gray-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div>
           <label class="text-xs text-gray-400">Deposit Amount (₹)</label>
-          <input type="number" id="deposit-input" value="100" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold text-lg mt-1 focus:outline-none focus:border-green-500">
+          <input type="number" id="deposit-input" value="100" oninput="updateDepositPreview()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold text-lg mt-1 focus:outline-none focus:border-green-500">
           <p class="text-[11px] text-amber-400 mt-1">✨ Aapko milenge <span id="deposit-coin-preview">100</span> Coins!</p>
         </div>
         <div class="flex gap-2">
-          <button onclick="setDepositAmount(100)" class="flex-1 bg-slate-800 border border-slate-700 text-xs py-1.5 rounded-lg text-gray-300">₹100</button>
-          <button onclick="setDepositAmount(500)" class="flex-1 bg-slate-800 border border-slate-700 text-xs py-1.5 rounded-lg text-gray-300">₹500</button>
-          <button onclick="setDepositAmount(1000)" class="flex-1 bg-slate-800 border border-slate-700 text-xs py-1.5 rounded-lg text-gray-300">₹1000</button>
+          <button onclick="setDepositAmount(100)" class="flex-1 bg-slate-800 border border-slate-700 text-xs py-1.5 rounded-lg text-gray-300 cursor-pointer">₹100</button>
+          <button onclick="setDepositAmount(500)" class="flex-1 bg-slate-800 border border-slate-700 text-xs py-1.5 rounded-lg text-gray-300 cursor-pointer">₹500</button>
+          <button onclick="setDepositAmount(1000)" class="flex-1 bg-slate-800 border border-slate-700 text-xs py-1.5 rounded-lg text-gray-300 cursor-pointer">₹1000</button>
         </div>
-        <button onclick="processDeposit()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg">Pay via UPI & Get Coins</button>
+        <button onclick="processDeposit()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-3 rounded-xl text-sm shadow-lg cursor-pointer">Pay via UPI & Get Coins</button>
       </div>
     </div>
 
@@ -307,7 +365,7 @@
       <div class="bg-brand-navy w-full max-w-md rounded-t-3xl sm:rounded-2xl p-4 space-y-4 border-t border-slate-700">
         <div class="flex justify-between items-center border-b border-slate-800 pb-2">
           <h3 class="font-bold text-sm text-white">Withdraw Coins to Bank / UPI</h3>
-          <button onclick="closeModal('modal-withdraw')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+          <button onclick="closeModal('modal-withdraw')" class="text-gray-400 hover:text-white cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div>
           <label class="text-xs text-gray-400">Coins to Withdraw (Min 100 Coins)</label>
@@ -317,7 +375,7 @@
           <label class="text-xs text-gray-400">UPI ID or Bank Account Details</label>
           <input type="text" id="withdraw-upi" placeholder="e.g. user@ybl or account details" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white text-xs mt-1 focus:outline-none focus:border-red-500">
         </div>
-        <button onclick="processWithdraw()" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-3 rounded-xl text-sm shadow-lg">Withdraw Money</button>
+        <button onclick="processWithdraw()" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-3 rounded-xl text-sm shadow-lg cursor-pointer">Withdraw Money</button>
       </div>
     </div>
 
@@ -325,7 +383,7 @@
     <div id="modal-game-screen" class="fixed inset-0 bg-black/95 z-50 hidden flex flex-col max-w-md mx-auto">
       <div class="bg-slate-900 p-3 border-b border-slate-800 flex justify-between items-center">
         <h3 id="game-title" class="font-bold text-sm text-white">Mini Game</h3>
-        <button onclick="closeModal('modal-game-screen')" class="text-gray-400 text-lg"><i class="fa-solid fa-xmark"></i></button>
+        <button onclick="closeModal('modal-game-screen')" class="text-gray-400 text-lg cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
       </div>
       <div class="flex-1 p-4 flex flex-col justify-center items-center overflow-y-auto" id="game-body"></div>
     </div>
@@ -338,31 +396,373 @@
   <script>
     const state = {
       user: null,
-      coins: 500, // 500 Coins Welcome Bonus
+      coins: 500,
       activeTab: 'fantasy',
       selectedMatch: null,
-      selectedContest: null,
       joinedContests: [],
-      transactions: [{ title: 'Welcome Bonus', amount: 500, type: 'credit', time: 'Just now' }]
+      transactions: [{ title: 'Welcome Bonus', amount: 500, type: 'credit', time: 'Just now' }],
+      pendingAuthMode: null,
+      pendingAuthData: null,
+      generatedOTP: '123456'
     };
 
     const mockMatches = [
-      { id: 'm1', team1: 'IND', team2: 'PAK', team1Flag: '🇮🇳', team2Flag: '🇵🇰', series: 'Asia Cup 2026', timeLeft: '2h 15m', contests: [{ id: 'c1', name: 'Mega Contest', entryFee: 50, prizePool: 10000, spotsTotal: 50000, spotsLeft: 12430 }] },
-      { id: 'm2', team1: 'MI', team2: 'CSK', team1Flag: '🏏', team2Flag: '🦁', series: 'T20 League 2026', timeLeft: '5h 40m', contests: [{ id: 'c4', name: 'Mega Contest', entryFee: 30, prizePool: 5000, spotsTotal: 30000, spotsLeft: 8900 }] }
+      { id: 'm1', team1: 'IND', team2: 'PAK', team1Flag: '🇮🇳', team2Flag: '🇵🇰', series: 'Asia Cup 2026', timeLeft: '2h 15m', contests: [{ id: 'c1', name: 'Mega Contest', entryFee: 50, prizePool: 10000 }] },
+      { id: 'm2', team1: 'MI', team2: 'CSK', team1Flag: '🏏', team2Flag: '🦁', series: 'T20 League 2026', timeLeft: '5h 40m', contests: [{ id: 'c4', name: 'Mega Contest', entryFee: 30, prizePool: 5000 }] }
     ];
 
     window.onload = function() {
-      lucide.createIcons();
       const savedUser = localStorage.getItem('dreamwin_user');
+      const savedCoins = localStorage.getItem('dreamwin_coins');
+      const savedTx = localStorage.getItem('dreamwin_tx');
+      const savedContests = localStorage.getItem('dreamwin_contests');
+
+      if (savedCoins) state.coins = parseInt(savedCoins);
+      if (savedTx) state.transactions = JSON.parse(savedTx);
+      if (savedContests) state.joinedContests = JSON.parse(savedContests);
+
       if (savedUser) {
         state.user = JSON.parse(savedUser);
+        document.getElementById('welcome-screen').classList.add('hidden');
         document.getElementById('auth-screen').classList.add('hidden');
         document.getElementById('app').classList.remove('hidden');
         updateProfileUI();
       }
       renderMatches();
       updateWalletUI();
+      renderTransactions();
+      renderJoinedContests();
     };
+
+    function showAuthScreen() {
+      document.getElementById('welcome-screen').classList.add('hidden');
+      document.getElementById('auth-screen').classList.remove('hidden');
+    }
+
+    function saveStateToStorage() {
+      localStorage.setItem('dreamwin_coins', state.coins);
+      localStorage.setItem('dreamwin_tx', JSON.stringify(state.transactions));
+      localStorage.setItem('dreamwin_contests', JSON.stringify(state.joinedContests));
+    }
+
+    // --- AUTHENTICATION & OTP FLOW ---
+    function switchAuthTab(tab) {
+      if (tab === 'login') {
+        document.getElementById('form-login').classList.remove('hidden');
+        document.getElementById('form-register').classList.add('hidden');
+        document.getElementById('auth-tab-login').className = 'flex-1 py-2 text-xs font-bold rounded-lg bg-brand-red text-white transition';
+        document.getElementById('auth-tab-register').className = 'flex-1 py-2 text-xs font-bold rounded-lg text-gray-400 transition';
+      } else {
+        document.getElementById('form-register').classList.remove('hidden');
+        document.getElementById('form-login').classList.add('hidden');
+        document.getElementById('auth-tab-register').className = 'flex-1 py-2 text-xs font-bold rounded-lg bg-green-600 text-white transition';
+        document.getElementById('auth-tab-login').className = 'flex-1 py-2 text-xs font-bold rounded-lg text-gray-400 transition';
+      }
+    }
+
+    function sendOTP(mode) {
+      state.pendingAuthMode = mode;
+      let phone = '';
+      let name = '';
+
+      if (mode === 'login') {
+        phone = document.getElementById('login-phone').value.trim();
+        const pass = document.getElementById('login-pass').value.trim();
+        if (!phone || !pass) {
+          showToast('Mobile number aur password enter karein!', 'error');
+          return;
+        }
+        name = 'Dhaneshwar Sahu';
+      } else {
+        name = document.getElementById('reg-name').value.trim();
+        phone = document.getElementById('reg-phone').value.trim();
+        const pass = document.getElementById('reg-pass').value.trim();
+        if (!name || !phone || !pass) {
+          showToast('Kripya sabhi details bharein!', 'error');
+          return;
+        }
+      }
+
+      state.pendingAuthData = { name, phone };
+      state.generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
+
+      document.getElementById('auth-step-credentials').classList.add('hidden');
+      document.getElementById('auth-step-otp').classList.remove('hidden');
+      document.getElementById('otp-phone-display').innerText = phone;
+      document.getElementById('otp-demo-code').innerText = state.generatedOTP;
+      document.getElementById('otp-input').value = '';
+
+      showToast(`OTP Sent to ${phone}: ${state.generatedOTP}`, 'success');
+    }
+
+    function backToAuthCredentials() {
+      document.getElementById('auth-step-otp').classList.add('hidden');
+      document.getElementById('auth-step-credentials').classList.remove('hidden');
+    }
+
+    function verifyOTP() {
+      const enteredOTP = document.getElementById('otp-input').value.trim();
+      if (enteredOTP !== state.generatedOTP && enteredOTP !== '123456') {
+        showToast('Galat OTP! Kripya sahi OTP enter karein.', 'error');
+        return;
+      }
+
+      state.user = state.pendingAuthData;
+      localStorage.setItem('dreamwin_user', JSON.stringify(state.user));
+
+      document.getElementById('auth-screen').classList.add('hidden');
+      document.getElementById('app').classList.remove('hidden');
+      updateProfileUI();
+
+      if (state.pendingAuthMode === 'register') {
+        showToast('Registration successful! 500 Coins added 🎉', 'success');
+      } else {
+        showToast('Login successful! Welcome back 🎉', 'success');
+      }
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('dreamwin_user');
+      state.user = null;
+      document.getElementById('app').classList.add('hidden');
+      document.getElementById('welcome-screen').classList.remove('hidden');
+      document.getElementById('auth-step-otp').classList.add('hidden');
+      document.getElementById('auth-step-credentials').classList.remove('hidden');
+      showToast('Logged out successfully', 'success');
+    }
+
+    function updateProfileUI() {
+      if (!state.user) return;
+      document.getElementById('profile-name').innerText = state.user.name;
+      document.getElementById('profile-phone').innerText = state.user.phone;
+      const initials = state.user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+      document.getElementById('user-avatar').innerText = initials;
+    }
+
+    // --- MINI GAMES ROUTER ---
+    function openGame(gameType) {
+      document.getElementById('modal-game-screen').classList.remove('hidden');
+      const body = document.getElementById('game-body');
+      const title = document.getElementById('game-title');
+
+      if (gameType === 'dragon') {
+        title.innerText = 'Dragon vs Tiger 🐲 vs 🐯';
+        body.innerHTML = `
+          <div class="text-center space-y-4 w-full max-w-xs">
+            <div class="bg-slate-900 border border-slate-800 p-2 rounded-xl text-center">
+              <span class="text-[10px] text-amber-400 font-bold uppercase tracking-widest">⚡ Lowest Total Bet Wins!</span>
+            </div>
+
+            <div class="flex justify-around items-center bg-slate-900 border border-slate-800 rounded-2xl p-4">
+              <div class="text-center">
+                <span class="text-4xl block mb-1">🐲</span>
+                <span class="text-xs font-bold text-red-400">DRAGON</span>
+                <p id="bet-total-dragon" class="text-[11px] text-amber-400 font-bold mt-1">Total: 0 Coins</p>
+              </div>
+              <div class="text-sm font-black text-gray-500">VS</div>
+              <div class="text-center">
+                <span class="text-4xl block mb-1">🐯</span>
+                <span class="text-xs font-bold text-amber-400">TIGER</span>
+                <p id="bet-total-tiger" class="text-[11px] text-amber-400 font-bold mt-1">Total: 0 Coins</p>
+              </div>
+            </div>
+
+            <div>
+              <label class="text-xs text-gray-400">Apni Bet Coins Choose Karein</label>
+              <input type="number" id="dvt-bet" value="50" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold text-center mt-1">
+            </div>
+
+            <p id="dvt-result" class="text-sm font-bold text-amber-400 h-6"></p>
+
+            <div class="flex gap-2">
+              <button onclick="playDragonTiger('DRAGON')" class="flex-1 bg-gradient-to-r from-red-600 to-red-800 hover:from-red-500 hover:to-red-700 font-bold py-3 rounded-xl text-white cursor-pointer shadow-lg">
+                Bet DRAGON 🐲
+              </button>
+              <button onclick="playDragonTiger('TIGER')" class="flex-1 bg-gradient-to-r from-amber-500 to-amber-700 hover:from-amber-400 hover:to-amber-600 font-bold py-3 rounded-xl text-slate-950 cursor-pointer shadow-lg">
+                Bet TIGER 🐯
+              </button>
+            </div>
+          </div>
+        `;
+      } else if (gameType === 'bigsmall') {
+        title.innerText = 'Big / Small 🎲';
+        body.innerHTML = `
+          <div class="text-center space-y-4 w-full max-w-xs">
+            <div class="bg-slate-900 border border-slate-800 p-2 rounded-xl text-center">
+              <span class="text-[10px] text-amber-400 font-bold uppercase tracking-widest">⚡ Lowest Total Bet Wins!</span>
+            </div>
+
+            <div class="flex justify-around items-center bg-slate-900 border border-slate-800 rounded-2xl p-4">
+              <div class="text-center">
+                <span class="text-xs font-bold text-blue-400 block">SMALL (1 - 4)</span>
+                <p id="bet-total-small" class="text-[11px] text-amber-400 font-bold mt-1">Total: 0 Coins</p>
+              </div>
+              <div id="dice-box" class="w-14 h-14 bg-slate-950 border border-slate-700 rounded-xl flex items-center justify-center text-2xl font-black text-amber-400 shadow-inner">
+                🎲
+              </div>
+              <div class="text-center">
+                <span class="text-xs font-bold text-red-400 block">BIG (5 - 8)</span>
+                <p id="bet-total-big" class="text-[11px] text-amber-400 font-bold mt-1">Total: 0 Coins</p>
+              </div>
+            </div>
+
+            <div>
+              <label class="text-xs text-gray-400">Bet Amount (Coins)</label>
+              <input type="number" id="bigsmall-bet" value="50" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold text-center mt-1">
+            </div>
+
+            <p id="bigsmall-result" class="text-sm font-bold text-white h-6"></p>
+
+            <div class="flex gap-2">
+              <button onclick="playBigSmall('SMALL')" class="flex-1 bg-blue-600 hover:bg-blue-500 font-bold py-3 rounded-xl text-white cursor-pointer shadow">
+                SMALL (1-4)
+              </button>
+              <button onclick="playBigSmall('BIG')" class="flex-1 bg-red-600 hover:bg-red-500 font-bold py-3 rounded-xl text-white cursor-pointer shadow">
+                BIG (5-8)
+              </button>
+            </div>
+          </div>
+        `;
+      } else if (gameType === 'spin') {
+        title.innerText = 'Spin & Win 🎡';
+        body.innerHTML = `
+          <div class="text-center space-y-4 w-full max-w-xs">
+            <p class="text-xs text-gray-400">Har spin par jeeto 10 se 200 Coins! (Fee: 20 Coins)</p>
+            <div id="spin-wheel" class="w-44 h-44 mx-auto bg-gradient-to-tr from-amber-500 to-red-600 rounded-full flex items-center justify-center text-white font-black text-xl shadow-2xl border-4 border-amber-300 transition-transform duration-1000">
+              🎡 SPIN
+            </div>
+            <p id="spin-result" class="text-sm font-bold text-amber-400 h-6"></p>
+            <button onclick="playSpinWheel()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-3 rounded-xl shadow cursor-pointer">Spin Now (20 Coins)</button>
+          </div>
+        `;
+      } else if (gameType === 'toss') {
+        title.innerText = 'Head or Tail 🪙';
+        body.innerHTML = `
+          <div class="text-center space-y-4 w-full max-w-xs">
+            <p class="text-xs text-gray-400">Sahi guess karo aur 2x Coins jeeto!</p>
+            <div id="coin-icon" class="w-24 h-24 mx-auto bg-brand-gold text-slate-950 rounded-full flex items-center justify-center text-3xl font-black shadow-lg">
+              🪙
+            </div>
+            <p id="toss-result" class="text-sm font-bold text-white h-6"></p>
+            <div class="flex gap-2">
+              <button onclick="playToss('HEAD')" class="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-400 font-bold py-3 rounded-xl cursor-pointer">HEAD</button>
+              <button onclick="playToss('TAIL')" class="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-400 font-bold py-3 rounded-xl cursor-pointer">TAIL</button>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // --- LEAST-BET GAME 1: DRAGON VS TIGER ---
+    function playDragonTiger(userChoice) {
+      const bet = parseInt(document.getElementById('dvt-bet').value);
+      if (!bet || bet <= 0 || bet > state.coins) {
+        showToast('Sahi bet amount enter karein!', 'error');
+        return;
+      }
+
+      state.coins -= bet;
+      updateWalletUI();
+
+      // Simulate live bot bets across both sides
+      const botDragonBets = Math.floor(Math.random() * 500) + 200;
+      const botTigerBets = Math.floor(Math.random() * 500) + 200;
+
+      let totalDragon = botDragonBets + (userChoice === 'DRAGON' ? bet : 0);
+      let totalTiger = botTigerBets + (userChoice === 'TIGER' ? bet : 0);
+
+      document.getElementById('bet-total-dragon').innerText = `Total: ${totalDragon} Coins`;
+      document.getElementById('bet-total-tiger').innerText = `Total: ${totalTiger} Coins`;
+      document.getElementById('dvt-result').innerText = 'Shuffling & Dealing Cards... 🃏';
+
+      setTimeout(() => {
+        // LEAST BET WINS LOGIC
+        let winningSide = totalDragon < totalTiger ? 'DRAGON' : 'TIGER';
+
+        if (userChoice === winningSide) {
+          const winAmt = bet * 2;
+          state.coins += winAmt;
+          state.transactions.unshift({ title: `Dragon/Tiger Win (${winningSide})`, amount: winAmt, type: 'credit', time: 'Just now' });
+          document.getElementById('dvt-result').innerText = `Winner: ${winningSide}! Aap Jeete ${winAmt} Coins! 🎉`;
+          confetti({ particleCount: 90, spread: 60, origin: { y: 0.6 } });
+          showToast(`Winner: ${winningSide}! Jeete ${winAmt} Coins`, 'success');
+        } else {
+          state.transactions.unshift({ title: `Dragon/Tiger Loss (${userChoice})`, amount: -bet, type: 'debit', time: 'Just now' });
+          document.getElementById('dvt-result').innerText = `Winner: ${winningSide}! Aap Haar Gaye.`;
+          showToast(`Winner: ${winningSide} (Lowest Bet)`, 'error');
+        }
+
+        saveStateToStorage();
+        updateWalletUI();
+        renderTransactions();
+      }, 1000);
+    }
+
+    // --- LEAST-BET GAME 2: BIG / SMALL ---
+    function playBigSmall(prediction) {
+      const bet = parseInt(document.getElementById('bigsmall-bet').value);
+      if (!bet || bet <= 0 || bet > state.coins) {
+        showToast('Sahi bet amount dalein!', 'error');
+        return;
+      }
+      state.coins -= bet;
+      updateWalletUI();
+
+      // Simulate bot bets
+      const botSmallBets = Math.floor(Math.random() * 400) + 150;
+      const botBigBets = Math.floor(Math.random() * 400) + 150;
+
+      let totalSmall = botSmallBets + (prediction === 'SMALL' ? bet : 0);
+      let totalBig = botBigBets + (prediction === 'BIG' ? bet : 0);
+
+      document.getElementById('bet-total-small').innerText = `Total: ${totalSmall} Coins`;
+      document.getElementById('bet-total-big').innerText = `Total: ${totalBig} Coins`;
+
+      const diceBox = document.getElementById('dice-box');
+      diceBox.innerText = '🎲...';
+
+      setTimeout(() => {
+        // LEAST BET WINS LOGIC
+        const winningSide = totalSmall < totalBig ? 'SMALL' : 'BIG';
+        
+        // Pick dice roll corresponding to winning side
+        let roll = 1;
+        if (winningSide === 'SMALL') {
+          roll = Math.floor(Math.random() * 4) + 1; // 1 to 4
+        } else {
+          roll = Math.floor(Math.random() * 4) + 5; // 5 to 8
+        }
+
+        diceBox.innerText = roll;
+
+        if (prediction === winningSide) {
+          const winAmt = bet * 2;
+          state.coins += winAmt;
+          state.transactions.unshift({ title: `Big/Small Win (${winningSide})`, amount: winAmt, type: 'credit', time: 'Just now' });
+          document.getElementById('bigsmall-result').innerText = `Roll: ${roll} (${winningSide}) - Jeete ${winAmt} Coins! 🎉`;
+          confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
+          showToast(`Roll ${roll}: Jeete ${winAmt} Coins!`, 'success');
+        } else {
+          state.transactions.unshift({ title: `Big/Small Loss (${prediction})`, amount: -bet, type: 'debit', time: 'Just now' });
+          document.getElementById('bigsmall-result').innerText = `Roll: ${roll} (${winningSide}) - Haar gaye!`;
+          showToast(`Roll ${roll}: Haar gaye!`, 'error');
+        }
+        saveStateToStorage();
+        updateWalletUI();
+        renderTransactions();
+      }, 900);
+    }
+      renderMatches();
+      updateWalletUI();
+      renderTransactions();
+      renderJoinedContests();
+    };
+
+    function saveStateToStorage() {
+      localStorage.setItem('dreamwin_coins', state.coins);
+      localStorage.setItem('dreamwin_tx', JSON.stringify(state.transactions));
+      localStorage.setItem('dreamwin_contests', JSON.stringify(state.joinedContests));
+    }
 
     // --- AUTHENTICATION ---
     function switchAuthTab(tab) {
@@ -428,4 +828,439 @@
       if (!state.user) return;
       document.getElementById('profile-name').innerText = state.user.name;
       document.getElementById('profile-phone').innerText = state.user.phone;
-      const initials = state.user.name
+      const initials = state.user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+      document.getElementById('user-avatar').innerText = initials;
+    }
+
+    // --- NAVIGATION & RENDER ---
+    function switchTab(tabId) {
+      state.activeTab = tabId;
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.getElementById(`sec-${tabId}`).classList.remove('hidden');
+
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('text-brand-red');
+        btn.classList.add('text-gray-400');
+      });
+      document.getElementById(`nav-${tabId}`).classList.add('text-brand-red');
+      document.getElementById(`nav-${tabId}`).classList.remove('text-gray-400');
+    }
+
+    function renderMatches() {
+      const container = document.getElementById('matches-list');
+      container.innerHTML = mockMatches.map(m => `
+        <div onclick="openContestPool('${m.id}')" class="bg-brand-card border border-slate-700/80 hover:border-brand-gold/60 rounded-2xl p-4 cursor-pointer shadow-md transition transform active:scale-98 space-y-3">
+          <div class="flex justify-between items-center text-[11px] text-gray-400 border-b border-slate-800 pb-2">
+            <span class="font-semibold text-gray-300">${m.series}</span>
+            <span class="text-amber-400 font-bold flex items-center gap-1"><i class="fa-regular fa-clock"></i> ${m.timeLeft}</span>
+          </div>
+          <div class="flex justify-between items-center px-2">
+            <div class="flex items-center space-x-3"><span class="text-3xl">${m.team1Flag}</span><h4 class="font-black text-base text-white">${m.team1}</h4></div>
+            <span class="text-xs font-bold text-red-500 bg-red-500/10 px-2 py-0.5 rounded-full">VS</span>
+            <div class="flex items-center space-x-3 flex-row-reverse space-x-reverse"><span class="text-3xl">${m.team2Flag}</span><h4 class="font-black text-base text-white">${m.team2}</h4></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function openContestPool(matchId) {
+      state.selectedMatch = mockMatches.find(m => m.id === matchId);
+      document.getElementById('pool-match-title').innerText = `${state.selectedMatch.team1} vs ${state.selectedMatch.team2}`;
+      const poolList = document.getElementById('contest-pool-list');
+      poolList.innerHTML = state.selectedMatch.contests.map(c => `
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex justify-between items-center">
+          <div>
+            <p class="text-xs text-gray-400">${c.name}</p>
+            <p class="text-lg font-black text-amber-400">${c.prizePool.toLocaleString()} Coins</p>
+          </div>
+          <button onclick="joinContest('${state.selectedMatch.team1} vs ${state.selectedMatch.team2}', ${c.entryFee})" class="bg-green-600 hover:bg-green-500 text-white font-extrabold text-xs px-4 py-2 rounded-xl shadow cursor-pointer">ENTRY ${c.entryFee} Coins</button>
+        </div>
+      `).join('');
+      document.getElementById('modal-contest-pool').classList.remove('hidden');
+    }
+
+    function joinContest(matchTitle, fee) {
+      if (state.coins < fee) {
+        showToast('Coins balance kam hai! Deposit karein.', 'error');
+        closeModal('modal-contest-pool');
+        openDepositModal();
+        return;
+      }
+      state.coins -= fee;
+      state.transactions.unshift({ title: `Contest Joined (${matchTitle})`, amount: -fee, type: 'debit', time: 'Just now' });
+      state.joinedContests.unshift({ title: matchTitle, entryFee: fee, time: 'Just now' });
+      
+      saveStateToStorage();
+      updateWalletUI();
+      renderTransactions();
+      renderJoinedContests();
+      closeModal('modal-contest-pool');
+      confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
+      showToast('Contest successfully join ho gaya hai 🎉', 'success');
+    }
+
+    function renderJoinedContests() {
+      const container = document.getElementById('joined-contests-list');
+      if (state.joinedContests.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-10 text-gray-400 bg-brand-card rounded-2xl border border-slate-800">
+            <i class="fa-solid fa-folder-open text-4xl text-slate-600 mb-2"></i>
+            <p class="text-sm">Aapne abhi koi contest join nahi kiya hai.</p>
+            <button onclick="switchTab('fantasy')" class="mt-3 bg-brand-red text-white text-xs px-4 py-2 rounded-xl font-bold cursor-pointer">Matches Dekho</button>
+          </div>
+        `;
+        return;
+      }
+      container.innerHTML = state.joinedContests.map(c => `
+        <div class="bg-brand-card border border-slate-700 rounded-xl p-3.5 flex justify-between items-center shadow">
+          <div>
+            <h4 class="font-bold text-sm text-white">${c.title}</h4>
+            <p class="text-xs text-gray-400 mt-0.5">Entry Fee: <span class="text-amber-400 font-bold">${c.entryFee} Coins</span></p>
+          </div>
+          <span class="bg-green-500/20 text-green-400 text-xs font-bold px-2.5 py-1 rounded-full">Joined Active</span>
+        </div>
+      `).join('');
+    }
+
+    // --- WALLET & TRANSACTIONS ---
+    updateWalletUI = function() {
+      document.getElementById('wallet-coins').innerText = state.coins;
+      document.getElementById('profile-wallet-coins').innerText = state.coins;
+      document.getElementById('wallet-inr').innerText = state.coins;
+    }
+
+    function renderTransactions() {
+      const container = document.getElementById('tx-history');
+      container.innerHTML = state.transactions.map(tx => `
+        <div class="bg-slate-900 border border-slate-800 rounded-xl p-2.5 flex justify-between items-center text-xs">
+          <div>
+            <p class="font-bold text-white">${tx.title}</p>
+            <p class="text-[10px] text-gray-400">${tx.time}</p>
+          </div>
+          <span class="font-black ${tx.type === 'credit' ? 'text-green-400' : 'text-red-400'}">
+            ${tx.type === 'credit' ? '+' : '-'}${Math.abs(tx.amount)} Coins
+          </span>
+        </div>
+      `).join('');
+    }
+
+    function openDepositModal() {
+      document.getElementById('modal-deposit').classList.remove('hidden');
+      updateDepositPreview();
+    }
+
+    function setDepositAmount(amt) {
+      document.getElementById('deposit-input').value = amt;
+      updateDepositPreview();
+    }
+
+    function updateDepositPreview() {
+      const val = document.getElementById('deposit-input').value || 0;
+      document.getElementById('deposit-coin-preview').innerText = val;
+    }
+
+    function processDeposit() {
+      const amt = parseInt(document.getElementById('deposit-input').value);
+      if (!amt || amt <= 0) {
+        showToast('Sahi amount enter karein!', 'error');
+        return;
+      }
+      state.coins += amt;
+      state.transactions.unshift({ title: `Deposit (₹${amt})`, amount: amt, type: 'credit', time: 'Just now' });
+      saveStateToStorage();
+      updateWalletUI();
+      renderTransactions();
+      closeModal('modal-deposit');
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      showToast(`Successfully added ${amt} Coins! 🎉`, 'success');
+    }
+
+    function openWithdrawModal() {
+      document.getElementById('modal-withdraw').classList.remove('hidden');
+    }
+
+    function processWithdraw() {
+      const coins = parseInt(document.getElementById('withdraw-input').value);
+      const upi = document.getElementById('withdraw-upi').value.trim();
+
+      if (!coins || coins < 100) {
+        showToast('Minimum withdrawal 100 Coins hai!', 'error');
+        return;
+      }
+      if (coins > state.coins) {
+        showToast('Aapke wallet mein itne coins nahi hain!', 'error');
+        return;
+      }
+      if (!upi) {
+        showToast('UPI ID ya Bank details bharein!', 'error');
+        return;
+      }
+
+      state.coins -= coins;
+      state.transactions.unshift({ title: `Withdrawal to ${upi}`, amount: -coins, type: 'debit', time: 'Just now' });
+      saveStateToStorage();
+      updateWalletUI();
+      renderTransactions();
+      closeModal('modal-withdraw');
+      showToast('Withdrawal request successfully placed! 🏦', 'success');
+    }
+
+    // --- MINI GAMES ROUTER ---
+    function openGame(gameType) {
+      document.getElementById('modal-game-screen').classList.remove('hidden');
+      const body = document.getElementById('game-body');
+      const title = document.getElementById('game-title');
+
+      if (gameType === 'spin') {
+        title.innerText = 'Spin & Win 🎡';
+        body.innerHTML = `
+          <div class="text-center space-y-4 w-full max-w-xs">
+            <p class="text-xs text-gray-400">Har spin par jeeto 10 se 200 Coins! (Fee: 20 Coins)</p>
+            <div id="spin-wheel" class="w-44 h-44 mx-auto bg-gradient-to-tr from-amber-500 to-red-600 rounded-full flex items-center justify-center text-white font-black text-xl shadow-2xl border-4 border-amber-300 transition-transform duration-1000">
+              🎡 SPIN
+            </div>
+            <p id="spin-result" class="text-sm font-bold text-amber-400 h-6"></p>
+            <button onclick="playSpinWheel()" class="w-full bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold py-3 rounded-xl shadow cursor-pointer">Spin Now (20 Coins)</button>
+          </div>
+        `;
+      } else if (gameType === 'toss') {
+        title.innerText = 'Head or Tail 🪙';
+        body.innerHTML = `
+          <div class="text-center space-y-4 w-full max-w-xs">
+            <p class="text-xs text-gray-400">Sahi guess karo aur 2x Coins jeeto!</p>
+            <div id="coin-icon" class="w-24 h-24 mx-auto bg-brand-gold text-slate-950 rounded-full flex items-center justify-center text-3xl font-black shadow-lg">
+              🪙
+            </div>
+            <p id="toss-result" class="text-sm font-bold text-white h-6"></p>
+            <div class="flex gap-2">
+              <button onclick="playToss('HEAD')" class="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-400 font-bold py-3 rounded-xl cursor-pointer">HEAD</button>
+              <button onclick="playToss('TAIL')" class="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-amber-400 font-bold py-3 rounded-xl cursor-pointer">TAIL</button>
+            </div>
+          </div>
+        `;
+      } else if (gameType === 'bigsmall') {
+        title.innerText = 'Big / Small 🎲';
+        body.innerHTML = `
+          <div class="text-center space-y-4 w-full max-w-xs">
+            <p class="text-xs text-gray-400">Dice 1-6. Small (1-3) ya Big (4-6)</p>
+            <div id="dice-box" class="w-20 h-20 mx-auto bg-slate-800 border border-slate-700 rounded-2xl flex items-center justify-center text-3xl font-black text-amber-400 shadow-inner">
+              🎲
+            </div>
+            <input type="number" id="bigsmall-bet" value="50" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-white font-bold text-center">
+            <p id="bigsmall-result" class="text-sm font-bold text-white h-6"></p>
+            <div class="flex gap-2">
+              <button onclick="playBigSmall('SMALL')" class="flex-1 bg-red-600 hover:bg-red-500 font-bold py-3 rounded-xl text-white cursor-pointer">SMALL (1-3)</button>
+              <button onclick="playBigSmall('BIG')" class="flex-1 bg-green-600 hover:bg-green-500 font-bold py-3 rounded-xl text-white cursor-pointer">BIG (4-6)</button>
+            </div>
+          </div>
+        `;
+      } else if (gameType === 'tictactoe') {
+        title.innerText = 'Tic-Tac-Toe AI ❌⭕';
+        body.innerHTML = `
+          <div class="text-center space-y-4 w-full max-w-xs">
+            <p class="text-xs text-gray-400">AI ko harao aur 50 Coins jeeto!</p>
+            <div id="ttt-board" class="grid grid-cols-3 gap-2 w-64 h-64 mx-auto"></div>
+            <p id="ttt-status" class="text-sm font-bold text-amber-400 h-6">Aapki baari hai (X)</p>
+            <button onclick="initTicTacToe()" class="w-full bg-slate-800 hover:bg-slate-700 text-white font-bold py-2 rounded-xl text-xs cursor-pointer">Restart Game</button>
+          </div>
+        `;
+        initTicTacToe();
+      }
+    }
+
+    // --- GAME 1: SPIN & WIN ---
+    function playSpinWheel() {
+      const fee = 20;
+      if (state.coins < fee) {
+        showToast('Coins kam hain!', 'error');
+        return;
+      }
+      state.coins -= fee;
+      updateWalletUI();
+
+      const wheel = document.getElementById('spin-wheel');
+      const randomDeg = 720 + Math.floor(Math.random() * 360);
+      wheel.style.transform = `rotate(${randomDeg}deg)`;
+
+      setTimeout(() => {
+        const prizes = [10, 20, 50, 100, 200, 30];
+        const won = prizes[Math.floor(Math.random() * prizes.length)];
+        state.coins += won;
+        state.transactions.unshift({ title: 'Spin & Win Prize', amount: won, type: 'credit', time: 'Just now' });
+        saveStateToStorage();
+        updateWalletUI();
+        renderTransactions();
+        document.getElementById('spin-result').innerText = `Badhai ho! Jeete ${won} Coins!`;
+        if (won >= 50) confetti({ particleCount: 60, spread: 50, origin: { y: 0.6 } });
+        showToast(`Jeete ${won} Coins!`, 'success');
+      }, 1000);
+    }
+
+    // --- GAME 2: HEAD OR TAIL ---
+    function playToss(choice) {
+      const fee = 30;
+      if (state.coins < fee) {
+        showToast('Coins kam hain!', 'error');
+        return;
+      }
+      state.coins -= fee;
+      updateWalletUI();
+
+      const coinIcon = document.getElementById('coin-icon');
+      coinIcon.innerHTML = '<i class="fa-solid fa-coins animate-spin"></i>';
+
+      setTimeout(() => {
+        const outcome = Math.random() < 0.5 ? 'HEAD' : 'TAIL';
+        coinIcon.innerText = outcome === 'HEAD' ? '👑' : '🦅';
+        if (choice === outcome) {
+          const winAmt = fee * 2;
+          state.coins += winAmt;
+          state.transactions.unshift({ title: 'Head/Tail Win', amount: winAmt, type: 'credit', time: 'Just now' });
+          document.getElementById('toss-result').innerText = `Sahi guess! Jeete ${winAmt} Coins 🎉`;
+          confetti({ particleCount: 70, spread: 60, origin: { y: 0.6 } });
+          showToast(`Sahi guess! Jeete ${winAmt} Coins`, 'success');
+        } else {
+          state.transactions.unshift({ title: 'Head/Tail Loss', amount: -fee, type: 'debit', time: 'Just now' });
+          document.getElementById('toss-result').innerText = `Galat guess! Aaya ${outcome}`;
+          showToast(`Galat guess! Aaya ${outcome}`, 'error');
+        }
+        saveStateToStorage();
+        updateWalletUI();
+        renderTransactions();
+      }, 800);
+    }
+
+    // --- GAME 3: BIG / SMALL ---
+    function playBigSmall(prediction) {
+      const bet = parseInt(document.getElementById('bigsmall-bet').value);
+      if (!bet || bet <= 0 || bet > state.coins) {
+        showToast('Sahi bet amount dalein!', 'error');
+        return;
+      }
+      state.coins -= bet;
+      updateWalletUI();
+
+      const diceBox = document.getElementById('dice-box');
+      diceBox.innerText = '🎲...';
+
+      setTimeout(() => {
+        const roll = Math.floor(Math.random() * 6) + 1;
+        const outcome = roll <= 3 ? 'SMALL' : 'BIG';
+        diceBox.innerText = roll;
+
+        if (prediction === outcome) {
+          const winAmt = bet * 2;
+          state.coins += winAmt;
+          state.transactions.unshift({ title: 'Big/Small Win', amount: winAmt, type: 'credit', time: 'Just now' });
+          document.getElementById('bigsmall-result').innerText = `Roll: ${roll} (${outcome}) - Jeete ${winAmt} Coins!`;
+          confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
+          showToast(`Roll ${roll}: Jeete ${winAmt} Coins!`, 'success');
+        } else {
+          state.transactions.unshift({ title: 'Big/Small Loss', amount: -bet, type: 'debit', time: 'Just now' });
+          document.getElementById('bigsmall-result').innerText = `Roll: ${roll} (${outcome}) - Haar gaye!`;
+          showToast(`Roll ${roll}: Haar gaye!`, 'error');
+        }
+        saveStateToStorage();
+        updateWalletUI();
+        renderTransactions();
+      }, 700);
+    }
+
+    // --- GAME 4: TIC-TAC-TOE AI ---
+    let tttBoard = ['', '', '', '', '', '', '', '', ''];
+    let tttActive = true;
+
+    function initTicTacToe() {
+      tttBoard = ['', '', '', '', '', '', '', '', ''];
+      tttActive = true;
+      document.getElementById('ttt-status').innerText = 'Aapki baari hai (X)';
+      renderTTTBoard();
+    }
+
+    function renderTTTBoard() {
+      const boardContainer = document.getElementById('ttt-board');
+      if (!boardContainer) return;
+      boardContainer.innerHTML = tttBoard.map((val, idx) => `
+        <button onclick="makeTTTMove(${idx})" class="bg-slate-900 border border-slate-800 text-2xl font-black rounded-xl h-full flex items-center justify-center ${val === 'X' ? 'text-brand-red' : 'text-amber-400'} cursor-pointer">
+          ${val}
+        </button>
+      `).join('');
+    }
+
+    function makeTTTMove(idx) {
+      if (!tttActive || tttBoard[idx] !== '') return;
+      tttBoard[idx] = 'X';
+      renderTTTBoard();
+
+      if (checkTTTWin('X')) {
+        document.getElementById('ttt-status').innerText = 'Aap jeet gaye! +50 Coins 🎉';
+        state.coins += 50;
+        state.transactions.unshift({ title: 'Tic-Tac-Toe Win', amount: 50, type: 'credit', time: 'Just now' });
+        saveStateToStorage();
+        updateWalletUI();
+        renderTransactions();
+        confetti({ particleCount: 80, spread: 60, origin: { y: 0.6 } });
+        showToast('Tic-Tac-Toe Jeet gaye! +50 Coins', 'success');
+        tttActive = false;
+        return;
+      }
+
+      if (tttBoard.every(cell => cell !== '')) {
+        document.getElementById('ttt-status').innerText = 'Match Draw!';
+        tttActive = false;
+        return;
+      }
+
+      // AI Move
+      document.getElementById('ttt-status').innerText = "AI soch raha hai...";
+      setTimeout(() => {
+        const emptyIndices = tttBoard.map((val, i) => val === '' ? i : null).filter(v => v !== null);
+        if (emptyIndices.length > 0 && tttActive) {
+          const aiMove = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
+          tttBoard[aiMove] = 'O';
+          renderTTTBoard();
+
+          if (checkTTTWin('O')) {
+            document.getElementById('ttt-status').innerText = 'AI jeet gaya!';
+            showToast('AI jeet gaya!', 'error');
+            tttActive = false;
+          } else {
+            document.getElementById('ttt-status').innerText = 'Aapki baari hai (X)';
+          }
+        }
+      }, 500);
+    }
+
+    function checkTTTWin(player) {
+      const wins = [
+        [0,1,2], [3,4,5], [6,7,8],
+        [0,3,6], [1,4,7], [2,5,8],
+        [0,4,8], [2,4,6]
+      ];
+      return wins.some(combo => combo.every(i => tttBoard[i] === player));
+    }
+
+    // --- TOAST NOTIFICATIONS ---
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      toast.className = `p-3 rounded-xl text-xs font-bold text-white shadow-lg pointer-events-auto transition transform translate-y-2 opacity-0 ${type === 'success' ? 'bg-green-600' : 'bg-red-600'}`;
+      toast.innerText = message;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      }, 50);
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'transition');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).classList.add('hidden');
+    }
+  </script>
+</body>
+</html>
