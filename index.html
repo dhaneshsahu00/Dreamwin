@@ -473,46 +473,46 @@
         </div>
       </section>
 
-    <!-- MODAL 4: LOGIN / USER AUTH MODAL WITH OTP -->
-    <div id="modal-login" class="fixed inset-0 bg-black/85 z-50 hidden flex justify-center items-center p-4">
-      <div class="bg-brand-navy w-full max-w-sm rounded-2xl p-5 space-y-4 border border-slate-700 text-center relative shadow-2xl">
-        <button onclick="closeModal('modal-login')" class="absolute top-3 right-3 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
+    </main>
 
-        <div class="w-12 h-12 bg-brand-red/20 text-brand-red rounded-full flex items-center justify-center text-xl mx-auto border border-brand-red/30">
-          <i class="fa-solid fa-shield-halved"></i>
+    <!-- BOTTOM NAVIGATION -->
+    <nav class="bg-slate-900/95 border-t border-slate-800 fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md z-40 px-2 py-2">
+      <div class="flex justify-around items-center text-center">
+        <button onclick="switchTab('fantasy')" id="nav-fantasy" class="nav-btn text-brand-red flex flex-col items-center">
+          <i class="fa-solid fa-cricket-bat-ball text-base"></i>
+          <span class="text-[10px] font-bold mt-1">Fantasy</span>
+        </button>
+        <button onclick="switchTab('games')" id="nav-games" class="nav-btn text-gray-400 flex flex-col items-center">
+          <i class="fa-solid fa-gamepad text-base"></i>
+          <span class="text-[10px] font-bold mt-1">Mini Games</span>
+        </button>
+        <button onclick="switchTab('host')" id="nav-host" class="nav-btn text-gray-400 flex flex-col items-center hidden">
+          <i class="fa-solid fa-user-shield text-base text-amber-400"></i>
+          <span class="text-[10px] font-bold mt-1 text-amber-400">Host Zone</span>
+        </button>
+        <button onclick="switchTab('contests')" id="nav-contests" class="nav-btn text-gray-400 flex flex-col items-center">
+          <i class="fa-solid fa-trophy text-base"></i>
+          <span class="text-[10px] font-bold mt-1">Contests</span>
+        </button>
+        <button onclick="switchTab('profile')" id="nav-profile" class="nav-btn text-gray-400 flex flex-col items-center">
+          <i class="fa-solid fa-user text-base"></i>
+          <span class="text-[10px] font-bold mt-1">Profile</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- MODAL 1: CONTEST POOL MODAL -->
+    <div id="modal-contest-pool" class="fixed inset-0 bg-black/80 z-50 hidden flex justify-center items-end sm:items-center">
+      <div class="bg-brand-navy w-full max-w-md rounded-t-3xl sm:rounded-2xl p-4 space-y-4 max-h-[85vh] overflow-y-auto border-t border-slate-700">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+          <div id="pool-match-title" class="font-bold text-sm text-white">IND vs PAK</div>
+          <button onclick="closeModal('modal-contest-pool')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
 
-        <div>
-          <h3 class="font-black text-lg text-white" id="login-modal-title">User Login / Register</h3>
-          <p class="text-xs text-gray-400 mt-0.5" id="login-modal-subtitle">Apna 10-digit mobile number enter karein</p>
-        </div>
+        <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400">Select Contest Pool</h3>
 
-        <!-- Phone Input Stage -->
-        <div id="phone-stage" class="text-left space-y-1">
-          <label class="text-xs text-gray-300 font-semibold">Mobile Number</label>
-          <div class="relative">
-            <span class="absolute left-3 top-2.5 text-xs text-gray-400 font-bold">+91</span>
-            <input type="text" id="login-phone-input" maxlength="10" placeholder="9876543210" oninput="validatePhoneInput(this)" class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-12 pr-3 py-2 text-white font-bold text-base focus:outline-none focus:border-brand-gold">
-          </div>
-          <p id="phone-error-msg" class="text-[11px] text-red-400 mt-1 hidden"></p>
-          <button onclick="sendOTP()" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-2.5 rounded-xl text-sm shadow-lg mt-3">
-            Get OTP
-          </button>
-        </div>
-
-        <!-- OTP Input Stage -->
-        <div id="otp-stage" class="text-left space-y-2 hidden">
-          <label class="text-xs text-gray-300 font-semibold">Enter 4-Digit OTP (Default: 1234)</label>
-          <div class="flex justify-center gap-2">
-            <input type="text" maxlength="1" class="otp-box w-10 h-10 text-center font-bold text-lg bg-slate-900 border border-slate-700 rounded-xl text-white">
-            <input type="text" maxlength="1" class="otp-box w-10 h-10 text-center font-bold text-lg bg-slate-900 border border-slate-700 rounded-xl text-white">
-            <input type="text" maxlength="1" class="otp-box w-10 h-10 text-center font-bold text-lg bg-slate-900 border border-slate-700 rounded-xl text-white">
-            <input type="text" maxlength="1" class="otp-box w-10 h-10 text-center font-bold text-lg bg-slate-900 border border-slate-700 rounded-xl text-white">
-          </div>
-          <p id="otp-error-msg" class="text-[11px] text-red-400 text-center hidden"></p>
-          <button onclick="verifyOTP()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-2.5 rounded-xl text-sm shadow-lg mt-2">
-            Verify & Login
-          </button>
+        <div id="contest-pool-list" class="space-y-3">
+          <!-- Dynamically populated contests -->
         </div>
       </div>
     </div>
@@ -600,13 +600,13 @@
       </div>
     </div>
 
-    <!-- MODAL 4: LOGIN / USER AUTH MODAL (STRICT 10-DIGIT VALIDATION) -->
+    <!-- MODAL 4: LOGIN / USER AUTH MODAL WITH OTP -->
     <div id="modal-login" class="fixed inset-0 bg-black/85 z-50 hidden flex justify-center items-center p-4">
       <div class="bg-brand-navy w-full max-w-sm rounded-2xl p-5 space-y-4 border border-slate-700 text-center relative shadow-2xl">
         <button onclick="closeModal('modal-login')" class="absolute top-3 right-3 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
 
         <div class="w-12 h-12 bg-brand-red/20 text-brand-red rounded-full flex items-center justify-center text-xl mx-auto border border-brand-red/30">
-          <i class="fa-solid fa-mobile-screen-button"></i>
+          <i class="fa-solid fa-shield-halved"></i>
         </div>
 
         <div>
@@ -614,18 +614,33 @@
           <p class="text-xs text-gray-400 mt-0.5">Apna 10-digit mobile number enter karein</p>
         </div>
 
-        <div class="text-left space-y-1">
+        <!-- Phone Input Stage -->
+        <div id="phone-stage" class="text-left space-y-1">
           <label class="text-xs text-gray-300 font-semibold">Mobile Number</label>
           <div class="relative">
             <span class="absolute left-3 top-2.5 text-xs text-gray-400 font-bold">+91</span>
             <input type="text" id="login-phone-input" maxlength="10" placeholder="9876543210" oninput="validatePhoneInput(this)" class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-12 pr-3 py-2 text-white font-bold text-base focus:outline-none focus:border-brand-gold">
           </div>
           <p id="phone-error-msg" class="text-[11px] text-red-400 mt-1 hidden"></p>
+          <button onclick="sendOTP()" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-2.5 rounded-xl text-sm shadow-lg mt-3">
+            Get OTP
+          </button>
         </div>
 
-        <button onclick="submitLogin()" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-2.5 rounded-xl text-sm shadow-lg">
-          Get OTP & Login
-        </button>
+        <!-- OTP Input Stage -->
+        <div id="otp-stage" class="text-left space-y-2 hidden">
+          <label class="text-xs text-gray-300 font-semibold">Enter 4-Digit OTP (Default: 1234)</label>
+          <div class="flex justify-center gap-2">
+            <input type="text" maxlength="1" class="otp-box w-10 h-10 text-center font-bold text-lg bg-slate-900 border border-slate-700 rounded-xl text-white">
+            <input type="text" maxlength="1" class="otp-box w-10 h-10 text-center font-bold text-lg bg-slate-900 border border-slate-700 rounded-xl text-white">
+            <input type="text" maxlength="1" class="otp-box w-10 h-10 text-center font-bold text-lg bg-slate-900 border border-slate-700 rounded-xl text-white">
+            <input type="text" maxlength="1" class="otp-box w-10 h-10 text-center font-bold text-lg bg-slate-900 border border-slate-700 rounded-xl text-white">
+          </div>
+          <p id="otp-error-msg" class="text-[11px] text-red-400 text-center hidden"></p>
+          <button onclick="verifyOTP()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-2.5 rounded-xl text-sm shadow-lg mt-2">
+            Verify & Login
+          </button>
+        </div>
       </div>
     </div>
 
@@ -694,7 +709,57 @@
   </div>
 
   <script>
-    // PLAYERS POOL WITH PLAYING STATUS INDICATOR
+    // GLOBAL APP STATE
+    let currentUser = {
+      phone: '9876543210',
+      name: 'Dhaneshwar Sahu',
+      wallet: 500,
+      role: 'Player'
+    };
+
+    let selectedMatch = null;
+    let selectedContest = null;
+    let selectedPlayers = [];
+    let captainId = null;
+    let viceCaptainId = null;
+    let joinedContestsList = [];
+    let currentRoleFilter = 'WK';
+    let pendingPhone = '';
+
+    // SAMPLE MATCHES DATA
+    const matchesData = [
+      {
+        id: 1,
+        t1: 'IND',
+        t1Flag: '🇮🇳',
+        t2: 'PAK',
+        t2Flag: '🇵🇰',
+        series: 'Asia T20 Cup',
+        time: 'Today, 7:30 PM',
+        prize: '₹10 Lakhs',
+        contests: [
+          { id: 101, entry: 49, prize: '₹5 Lakhs', maxSpots: 10000, joined: 6420, winners: '60%' },
+          { id: 102, entry: 29, prize: '₹2 Lakhs', maxSpots: 8000, joined: 4100, winners: '55%' },
+          { id: 103, entry: 10, prize: '₹50,000', maxSpots: 5000, joined: 4900, winners: '70%' }
+        ]
+      },
+      {
+        id: 2,
+        t1: 'AUS',
+        t1Flag: '🇦🇺',
+        t2: 'ENG',
+        t2Flag: '🏴󠁧󠁢󠁥󠁮󠁧󠁿',
+        series: 'The Ashes T20',
+        time: 'Tomorrow, 3:30 PM',
+        prize: '₹5 Lakhs',
+        contests: [
+          { id: 201, entry: 99, prize: '₹3 Lakhs', maxSpots: 5000, joined: 2300, winners: '50%' },
+          { id: 202, entry: 19, prize: '₹1 Lakh', maxSpots: 6000, joined: 3100, winners: '65%' }
+        ]
+      }
+    ];
+
+    // PLAYERS POOL WITH REAL-TIME PLAYING STATUS
     const playersPool = [
       { id: 1, name: 'V. Kohli', role: 'BAT', team: 'IND', credits: 10.5, pts: 890, playing: true },
       { id: 2, name: 'R. Sharma', role: 'BAT', team: 'IND', credits: 10.0, pts: 820, playing: true },
@@ -707,88 +772,19 @@
       { id: 9, name: 'S. Afridi', role: 'BOWL', team: 'PAK', credits: 9.0, pts: 840, playing: true },
       { id: 10, name: 'M. Siraj', role: 'BOWL', team: 'IND', credits: 8.5, pts: 670, playing: true },
       { id: 11, name: 'H. Rauf', role: 'BOWL', team: 'PAK', credits: 8.5, pts: 650, playing: false },
-      { id: 12, name: 'S. Yadav', role: 'BAT', team: 'IND', credits: 9.0, pts: 790, playing: true }
+      { id: 12, name: 'S. Yadav', role: 'BAT', team: 'IND', credits: 9.0, pts: 790, playing: true },
+      { id: 13, name: 'F. Zaman', role: 'BAT', team: 'PAK', credits: 8.0, pts: 580, playing: false },
+      { id: 14, name: 'R. Jadeja', role: 'AR', team: 'IND', credits: 8.5, pts: 730, playing: true },
+      { id: 15, name: 'N. Shah', role: 'BOWL', team: 'PAK', credits: 8.0, pts: 600, playing: true }
     ];
 
-    function toggleNotifications() {
-      const drop = document.getElementById('notif-dropdown');
-      drop.classList.toggle('hidden');
-    }
+    // INITIALIZATION
+    window.onload = function() {
+      renderMatches();
+      updateWalletUI();
+    };
 
-    function renderPlayerList() {
-      const container = document.getElementById('player-list-container');
-      const players = playersPool.filter(p => p.role === currentRoleFilter);
-
-      container.innerHTML = players.map(p => {
-        const isSelected = selectedPlayers.includes(p.id);
-        return `
-          <div onclick="togglePlayerSelect(${p.id})" class="flex justify-between items-center p-3 rounded-xl border ${isSelected ? 'bg-amber-500/10 border-amber-500' : 'bg-slate-900 border-slate-800'} cursor-pointer">
-            <div>
-              <div class="flex items-center gap-1.5">
-                <p class="font-bold text-xs text-white">${p.name} <span class="text-[9px] text-gray-400">(${p.team})</span></p>
-                <span class="w-2 h-2 rounded-full ${p.playing ? 'bg-green-500' : 'bg-red-500'}" title="${p.playing ? 'Playing' : 'Not Playing'}"></span>
-              </div>
-              <p class="text-[10px] ${p.playing ? 'text-green-400' : 'text-red-400'} font-semibold">${p.playing ? '● Playing' : '○ Not Playing'}</p>
-            </div>
-            <div class="flex items-center space-x-3">
-              <span class="text-xs font-bold text-gray-300">${p.credits} Cr</span>
-              <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${isSelected ? 'bg-brand-gold text-slate-900' : 'bg-slate-800 text-gray-400'}">
-                ${isSelected ? '<i class="fa-solid fa-check"></i>' : '+'}
-              </div>
-            </div>
-          </div>
-        `;
-      }).join('');
-    }
-
-    // OTP FLOW
-    let pendingPhone = '';
-    function openLoginModal() {
-      document.getElementById('login-phone-input').value = '';
-      document.getElementById('phone-error-msg').classList.add('hidden');
-      document.getElementById('otp-error-msg').classList.add('hidden');
-      document.getElementById('phone-stage').classList.remove('hidden');
-      document.getElementById('otp-stage').classList.add('hidden');
-      openModal('modal-login');
-    }
-
-    function sendOTP() {
-      const input = document.getElementById('login-phone-input');
-      const err = document.getElementById('phone-error-msg');
-      const phone = input.value.trim();
-
-      if (phone.length !== 10) {
-        err.innerText = 'Sahi 10-digit mobile number enter karein.';
-        err.classList.remove('hidden');
-        return;
-      }
-      pendingPhone = phone;
-      err.classList.add('hidden');
-      document.getElementById('phone-stage').classList.add('hidden');
-      document.getElementById('otp-stage').classList.remove('hidden');
-      showToast('OTP sent: 1234');
-    }
-
-    function verifyOTP() {
-      const boxes = document.querySelectorAll('.otp-box');
-      let otpVal = '';
-      boxes.forEach(b => otpVal += b.value);
-
-      if (otpVal.length < 4) {
-        const err = document.getElementById('otp-error-msg');
-        err.innerText = '4-digit OTP enter karein.';
-        err.classList.remove('hidden');
-        return;
-      }
-
-      currentUser.phone = pendingPhone;
-      document.getElementById('user-display-phone').innerText = '+91 ' + pendingPhone;
-      closeModal('modal-login');
-      showToast(`Logged in successfully with +91 ${pendingPhone}`);
-    }
-    ];
-
-    // DRAWER HELPER FUNCTIONS
+    // SIDE DRAWER FUNCTIONS
     function openSideDrawer() {
       document.getElementById('side-drawer').classList.remove('hidden');
     }
@@ -802,11 +798,10 @@
       switchTab(tabId);
     }
 
-    // INITIALIZATION
-    window.onload = function() {
-      renderMatches();
-      updateWalletUI();
-    };
+    function toggleNotifications() {
+      const drop = document.getElementById('notif-dropdown');
+      drop.classList.toggle('hidden');
+    }
 
     // TAB NAVIGATION
     function switchTab(tabId) {
@@ -929,8 +924,11 @@
         return `
           <div onclick="togglePlayerSelect(${p.id})" class="flex justify-between items-center p-3 rounded-xl border ${isSelected ? 'bg-amber-500/10 border-amber-500' : 'bg-slate-900 border-slate-800'} cursor-pointer">
             <div>
-              <p class="font-bold text-xs text-white">${p.name} <span class="text-[9px] text-gray-400">(${p.team})</span></p>
-              <p class="text-[10px] text-gray-400">Pts: ${p.pts}</p>
+              <div class="flex items-center gap-1.5">
+                <p class="font-bold text-xs text-white">${p.name} <span class="text-[9px] text-gray-400">(${p.team})</span></p>
+                <span class="w-2 h-2 rounded-full ${p.playing ? 'bg-green-500' : 'bg-red-500'}" title="${p.playing ? 'Playing' : 'Not Playing'}"></span>
+              </div>
+              <p class="text-[10px] ${p.playing ? 'text-green-400' : 'text-red-400'} font-semibold">${p.playing ? '● Playing' : '○ Not Playing'}</p>
             </div>
             <div class="flex items-center space-x-3">
               <span class="text-xs font-bold text-gray-300">${p.credits} Cr</span>
@@ -1071,10 +1069,13 @@
       `).join('');
     }
 
-    // LOGIN & USER MOBILE VALIDATION (STRICT 10 DIGIT)
+    // AUTH & OTP FLOW
     function openLoginModal() {
       document.getElementById('login-phone-input').value = '';
       document.getElementById('phone-error-msg').classList.add('hidden');
+      document.getElementById('otp-error-msg').classList.add('hidden');
+      document.getElementById('phone-stage').classList.remove('hidden');
+      document.getElementById('otp-stage').classList.add('hidden');
       openModal('modal-login');
     }
 
@@ -1082,25 +1083,43 @@
       input.value = input.value.replace(/[^0-9]/g, '');
     }
 
-    function submitLogin() {
+    function sendOTP() {
       const input = document.getElementById('login-phone-input');
       const err = document.getElementById('phone-error-msg');
       const phone = input.value.trim();
 
       if (phone.length !== 10) {
-        err.innerText = 'Kripya sahi 10-digit mobile number enter karein.';
+        err.innerText = 'Sahi 10-digit mobile number enter karein.';
+        err.classList.remove('hidden');
+        return;
+      }
+      pendingPhone = phone;
+      err.classList.add('hidden');
+      document.getElementById('phone-stage').classList.add('hidden');
+      document.getElementById('otp-stage').classList.remove('hidden');
+      showToast('OTP sent: 1234');
+    }
+
+    function verifyOTP() {
+      const boxes = document.querySelectorAll('.otp-box');
+      let otpVal = '';
+      boxes.forEach(b => otpVal += b.value);
+
+      if (otpVal.length < 4) {
+        const err = document.getElementById('otp-error-msg');
+        err.innerText = '4-digit OTP enter karein.';
         err.classList.remove('hidden');
         return;
       }
 
-      err.classList.add('hidden');
-      currentUser.phone = phone;
-      document.getElementById('user-display-phone').innerText = '+91 ' + phone;
+      currentUser.phone = pendingPhone;
+      document.getElementById('user-display-phone').innerText = '+91 ' + pendingPhone;
+      document.getElementById('drawer-user-phone').innerText = '+91 ' + pendingPhone;
       closeModal('modal-login');
-      showToast(`Welcome back! Logged in with +91 ${phone}`);
+      showToast(`Logged in successfully with +91 ${pendingPhone}`);
     }
 
-    // ROLE & HOST MANAGEMENT (3 OPTIONS)
+    // ROLE & HOST MANAGEMENT
     function openRoleModal() {
       openModal('modal-role-select');
     }
@@ -1144,7 +1163,7 @@
       showToast('Custom Room successfully created!');
     }
 
-    // ADD CASH MODAL & VALIDATION (5 QUICK OPTIONS)
+    // ADD CASH & WITHDRAW FUNCTIONS
     function openAddCashModal() {
       document.getElementById('cash-error-msg').classList.add('hidden');
       openModal('modal-add-cash');
@@ -1184,10 +1203,6 @@
       closeModal('modal-add-cash');
       confetti({ particleCount: 80, spread: 60 });
       showToast(`₹${amt} successfully added to wallet!`);
-    }
-
-    function withdrawCash() {
-      openWithdrawModal();
     }
 
     function openWithdrawModal() {
@@ -1248,7 +1263,7 @@
         `;
       } else if (gameType === 'memory') {
         title.innerText = 'Memory Card Match';
-        container.innerHTML = `<div class="text-center space-y-3"><p class="text-xs text-gray-300">Cards milao aur 50 coins jeeto!</p><button onclick="showToast('Memory game coming soon in live server!')" class="bg-blue-600 px-4 py-2 rounded-xl text-xs font-bold">Start Memory Match</button></div>`;
+        container.innerHTML = `<div class="text-center space-y-3"><p class="text-xs text-gray-300">Cards milao aur 50 coins jeeto!</p><button onclick="showToast('Memory game coming soon!')" class="bg-blue-600 px-4 py-2 rounded-xl text-xs font-bold">Start Memory Match</button></div>`;
       } else if (gameType === 'tictactoe') {
         title.innerText = 'Tic-Tac-Toe VS AI';
         container.innerHTML = `<div class="text-center space-y-3"><p class="text-xs text-gray-300">Play Tic-Tac-Toe against Smart Bot!</p><button onclick="showToast('Tic-Tac-Toe mode initialized!')" class="bg-emerald-600 px-4 py-2 rounded-xl text-xs font-bold">Start Game</button></div>`;
