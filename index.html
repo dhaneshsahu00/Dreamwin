@@ -91,27 +91,140 @@
   <!-- Mobile Container Wrapper -->
   <div id="app" class="w-full max-w-md bg-brand-navy min-h-screen flex flex-col justify-between shadow-2xl relative overflow-hidden pb-20 border-x border-slate-800">
     
-    <!-- HEADER -->
-    <header class="bg-gradient-to-r from-brand-red to-brand-darkRed p-4 sticky top-0 z-40 shadow-lg">
-      <div class="flex justify-between items-center">
-        <!-- Logo -->
-        <div class="flex items-center space-x-2">
-          <i class="fa-solid fa-trophy text-brand-gold text-2xl animate-bounce"></i>
-          <div>
-            <h1 class="text-xl font-extrabold tracking-wider text-white">DREAM<span class="text-brand-gold">WIN</span></h1>
-            <p class="text-[10px] text-red-200 font-semibold uppercase tracking-widest">Khel Khelo, Cash Jeeto</p>
+    <!-- SIDE NAVIGATION DRAWER (THREE DOTS / HAMBURGER MENU) -->
+    <div id="side-drawer" class="fixed inset-0 z-50 bg-black/80 hidden transition-opacity duration-300">
+      <div class="w-4/5 max-w-xs bg-slate-900 h-full border-r border-slate-800 p-4 space-y-4 overflow-y-auto flex flex-col justify-between shadow-2xl">
+        <div class="space-y-4">
+          <!-- Drawer Header -->
+          <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+            <div class="flex items-center space-x-2">
+              <i class="fa-solid fa-trophy text-brand-gold text-xl"></i>
+              <span class="font-black text-white text-base">DREAM<span class="text-brand-gold">WIN</span></span>
+            </div>
+            <button onclick="closeSideDrawer()" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+          </div>
+
+          <!-- User Mini Profile -->
+          <div class="bg-brand-card p-3 rounded-xl border border-slate-800 flex items-center space-x-3">
+            <div class="w-10 h-10 bg-brand-red text-white font-bold rounded-full flex items-center justify-center text-sm border border-brand-gold">
+              DS
+            </div>
+            <div>
+              <p class="font-bold text-xs text-white" id="drawer-user-name">Dhaneshwar Sahu</p>
+              <p class="text-[10px] text-gray-400" id="drawer-user-phone">+91 9876543210</p>
+            </div>
+          </div>
+
+          <!-- Drawer Options List -->
+          <div class="space-y-1 text-xs">
+            <button onclick="drawerNavigate('profile')" class="w-full flex items-center space-x-3 p-2.5 rounded-xl hover:bg-slate-800 text-gray-200">
+              <i class="fa-solid fa-user text-brand-gold w-5"></i>
+              <span>My Profile & Wallet</span>
+            </button>
+
+            <button onclick="openAddCashModal(); closeSideDrawer();" class="w-full flex items-center space-x-3 p-2.5 rounded-xl hover:bg-slate-800 text-gray-200">
+              <i class="fa-solid fa-wallet text-green-400 w-5"></i>
+              <span>Add Cash to Wallet</span>
+            </button>
+
+            <button onclick="openWithdrawModal(); closeSideDrawer();" class="w-full flex items-center space-x-3 p-2.5 rounded-xl hover:bg-slate-800 text-gray-200">
+              <i class="fa-solid fa-building-columns text-blue-400 w-5"></i>
+              <span>Withdraw Money</span>
+            </button>
+
+            <button onclick="drawerNavigate('profile')" class="w-full flex items-center space-x-3 p-2.5 rounded-xl hover:bg-slate-800 text-gray-200">
+              <i class="fa-solid fa-receipt text-purple-400 w-5"></i>
+              <span>Transaction History</span>
+            </button>
+
+            <button onclick="drawerNavigate('profile')" class="w-full flex items-center space-x-3 p-2.5 rounded-xl hover:bg-slate-800 text-gray-200">
+              <i class="fa-solid fa-id-card text-amber-400 w-5"></i>
+              <span>KYC & Bank Details</span>
+            </button>
+
+            <button onclick="openRoleModal(); closeSideDrawer();" class="w-full flex items-center space-x-3 p-2.5 rounded-xl hover:bg-slate-800 text-gray-200">
+              <i class="fa-solid fa-user-gear text-orange-400 w-5"></i>
+              <span>Switch Mode (Player / Host)</span>
+            </button>
+
+            <div class="border-t border-slate-800 pt-2 my-2"></div>
+
+            <button onclick="showToast('Responsible Gaming guidelines loaded')" class="w-full flex items-center space-x-3 p-2.5 rounded-xl hover:bg-slate-800 text-gray-300">
+              <i class="fa-solid fa-shield-halved text-emerald-400 w-5"></i>
+              <span>Responsible Gaming</span>
+            </button>
+
+            <button onclick="showToast('Helpdesk active: Support@dreamwin.com')" class="w-full flex items-center space-x-3 p-2.5 rounded-xl hover:bg-slate-800 text-gray-300">
+              <i class="fa-solid fa-headset text-cyan-400 w-5"></i>
+              <span>24x7 Help & Support</span>
+            </button>
+
+            <button onclick="showToast('Referral code copied to clipboard!')" class="w-full flex items-center space-x-3 p-2.5 rounded-xl hover:bg-slate-800 text-gray-300">
+              <i class="fa-solid fa-share-nodes text-pink-400 w-5"></i>
+              <span>Share & Earn Bonus</span>
+            </button>
           </div>
         </div>
 
-        <!-- Mode Badge & Wallet Box -->
-        <div class="flex items-center gap-2">
-          <!-- Role Switcher Trigger -->
+        <div class="border-t border-slate-800 pt-3">
+          <button onclick="openLoginModal(); closeSideDrawer();" class="w-full bg-slate-800 hover:bg-slate-700 text-red-400 border border-slate-700 rounded-xl p-2.5 text-xs font-bold flex items-center justify-center space-x-2">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span>Logout / Switch User</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="bg-gradient-to-r from-brand-red to-brand-darkRed p-3 sticky top-0 z-40 shadow-lg">
+      <div class="flex justify-between items-center">
+        <!-- Three Dots / Side Menu Trigger & Logo -->
+        <div class="flex items-center space-x-2">
+          <button onclick="openSideDrawer()" class="text-white hover:text-brand-gold bg-slate-900/40 p-1.5 rounded-lg border border-white/10 flex items-center justify-center">
+            <i class="fa-solid fa-ellipsis-vertical text-lg px-1"></i>
+          </button>
+          <div class="flex items-center space-x-1.5 cursor-pointer" onclick="switchTab('fantasy')">
+            <i class="fa-solid fa-trophy text-brand-gold text-xl animate-bounce"></i>
+            <div>
+              <h1 class="text-lg font-extrabold tracking-wider text-white leading-tight">DREAM<span class="text-brand-gold">WIN</span></h1>
+              <p class="text-[8px] text-red-200 font-semibold uppercase tracking-widest">Khel Khelo, Cash Jeeto</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode Badge, Notifications & Wallet Box -->
+        <div class="flex items-center gap-1.5">
+          <!-- Notification Bell -->
+          <div class="relative">
+            <button onclick="toggleNotifications()" class="bg-slate-900/90 text-amber-400 border border-amber-400/30 p-1.5 rounded-xl text-xs flex items-center justify-center relative">
+              <i class="fa-solid fa-bell"></i>
+              <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full animate-ping"></span>
+              <span class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-red-500 rounded-full"></span>
+            </button>
+            <!-- Dropdown -->
+            <div id="notif-dropdown" class="absolute right-0 mt-2 w-64 bg-slate-900 border border-slate-700 rounded-xl p-3 shadow-2xl hidden z-50 space-y-2 text-xs">
+              <div class="flex justify-between items-center border-b border-slate-800 pb-1">
+                <span class="font-bold text-white">Notifications</span>
+                <span class="text-[9px] text-brand-gold font-bold">3 New</span>
+              </div>
+              <div class="space-y-1.5 text-[11px]">
+                <div class="p-2 bg-slate-800/80 rounded-lg flex gap-2">
+                  <i class="fa-solid fa-circle-check text-green-400 mt-0.5"></i>
+                  <div><p class="font-bold text-gray-200">Playing 11 Out!</p><p class="text-[9px] text-gray-400">IND vs PAK Playing 11 announced.</p></div>
+                </div>
+                <div class="p-2 bg-slate-800/80 rounded-lg flex gap-2">
+                  <i class="fa-solid fa-gift text-amber-400 mt-0.5"></i>
+                  <div><p class="font-bold text-gray-200">Bonus Claimed</p><p class="text-[9px] text-gray-400">₹500 Deposit bonus added.</p></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <button onclick="openRoleModal()" class="bg-slate-900/90 text-brand-gold border border-brand-gold/40 px-2 py-1 rounded-xl text-[10px] font-bold flex items-center gap-1 shadow">
             <i class="fa-solid fa-user-gear"></i>
             <span id="current-role-badge">Player</span>
           </button>
 
-          <!-- Wallet Box -->
           <div class="bg-slate-900/80 border border-amber-400/30 rounded-xl px-2.5 py-1 flex items-center space-x-2 cursor-pointer" onclick="openAddCashModal()">
             <i class="fa-solid fa-wallet text-brand-gold text-xs"></i>
             <div>
@@ -360,46 +473,46 @@
         </div>
       </section>
 
-    </main>
+    <!-- MODAL 4: LOGIN / USER AUTH MODAL WITH OTP -->
+    <div id="modal-login" class="fixed inset-0 bg-black/85 z-50 hidden flex justify-center items-center p-4">
+      <div class="bg-brand-navy w-full max-w-sm rounded-2xl p-5 space-y-4 border border-slate-700 text-center relative shadow-2xl">
+        <button onclick="closeModal('modal-login')" class="absolute top-3 right-3 text-gray-400 hover:text-white"><i class="fa-solid fa-xmark"></i></button>
 
-    <!-- BOTTOM NAVIGATION -->
-    <nav class="bg-slate-900/95 border-t border-slate-800 fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md z-40 px-2 py-2">
-      <div class="flex justify-around items-center text-center">
-        <button onclick="switchTab('fantasy')" id="nav-fantasy" class="nav-btn text-brand-red flex flex-col items-center">
-          <i class="fa-solid fa-cricket-bat-ball text-base"></i>
-          <span class="text-[10px] font-bold mt-1">Fantasy</span>
-        </button>
-        <button onclick="switchTab('games')" id="nav-games" class="nav-btn text-gray-400 flex flex-col items-center">
-          <i class="fa-solid fa-gamepad text-base"></i>
-          <span class="text-[10px] font-bold mt-1">Mini Games</span>
-        </button>
-        <button onclick="switchTab('host')" id="nav-host" class="nav-btn text-gray-400 flex flex-col items-center hidden">
-          <i class="fa-solid fa-user-shield text-base text-amber-400"></i>
-          <span class="text-[10px] font-bold mt-1 text-amber-400">Host Zone</span>
-        </button>
-        <button onclick="switchTab('contests')" id="nav-contests" class="nav-btn text-gray-400 flex flex-col items-center">
-          <i class="fa-solid fa-trophy text-base"></i>
-          <span class="text-[10px] font-bold mt-1">Contests</span>
-        </button>
-        <button onclick="switchTab('profile')" id="nav-profile" class="nav-btn text-gray-400 flex flex-col items-center">
-          <i class="fa-solid fa-user text-base"></i>
-          <span class="text-[10px] font-bold mt-1">Profile</span>
-        </button>
-      </div>
-    </nav>
-
-    <!-- MODAL 1: CONTEST POOL MODAL -->
-    <div id="modal-contest-pool" class="fixed inset-0 bg-black/80 z-50 hidden flex justify-center items-end sm:items-center">
-      <div class="bg-brand-navy w-full max-w-md rounded-t-3xl sm:rounded-2xl p-4 space-y-4 max-h-[85vh] overflow-y-auto border-t border-slate-700">
-        <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-          <div id="pool-match-title" class="font-bold text-sm text-white">IND vs PAK</div>
-          <button onclick="closeModal('modal-contest-pool')" class="text-gray-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        <div class="w-12 h-12 bg-brand-red/20 text-brand-red rounded-full flex items-center justify-center text-xl mx-auto border border-brand-red/30">
+          <i class="fa-solid fa-shield-halved"></i>
         </div>
 
-        <h3 class="text-xs font-bold uppercase tracking-wider text-gray-400">Select Contest Pool</h3>
+        <div>
+          <h3 class="font-black text-lg text-white" id="login-modal-title">User Login / Register</h3>
+          <p class="text-xs text-gray-400 mt-0.5" id="login-modal-subtitle">Apna 10-digit mobile number enter karein</p>
+        </div>
 
-        <div id="contest-pool-list" class="space-y-3">
-          <!-- Dynamically populated contests -->
+        <!-- Phone Input Stage -->
+        <div id="phone-stage" class="text-left space-y-1">
+          <label class="text-xs text-gray-300 font-semibold">Mobile Number</label>
+          <div class="relative">
+            <span class="absolute left-3 top-2.5 text-xs text-gray-400 font-bold">+91</span>
+            <input type="text" id="login-phone-input" maxlength="10" placeholder="9876543210" oninput="validatePhoneInput(this)" class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-12 pr-3 py-2 text-white font-bold text-base focus:outline-none focus:border-brand-gold">
+          </div>
+          <p id="phone-error-msg" class="text-[11px] text-red-400 mt-1 hidden"></p>
+          <button onclick="sendOTP()" class="w-full bg-brand-red hover:bg-brand-darkRed text-white font-bold py-2.5 rounded-xl text-sm shadow-lg mt-3">
+            Get OTP
+          </button>
+        </div>
+
+        <!-- OTP Input Stage -->
+        <div id="otp-stage" class="text-left space-y-2 hidden">
+          <label class="text-xs text-gray-300 font-semibold">Enter 4-Digit OTP (Default: 1234)</label>
+          <div class="flex justify-center gap-2">
+            <input type="text" maxlength="1" class="otp-box w-10 h-10 text-center font-bold text-lg bg-slate-900 border border-slate-700 rounded-xl text-white">
+            <input type="text" maxlength="1" class="otp-box w-10 h-10 text-center font-bold text-lg bg-slate-900 border border-slate-700 rounded-xl text-white">
+            <input type="text" maxlength="1" class="otp-box w-10 h-10 text-center font-bold text-lg bg-slate-900 border border-slate-700 rounded-xl text-white">
+            <input type="text" maxlength="1" class="otp-box w-10 h-10 text-center font-bold text-lg bg-slate-900 border border-slate-700 rounded-xl text-white">
+          </div>
+          <p id="otp-error-msg" class="text-[11px] text-red-400 text-center hidden"></p>
+          <button onclick="verifyOTP()" class="w-full bg-green-600 hover:bg-green-500 text-white font-bold py-2.5 rounded-xl text-sm shadow-lg mt-2">
+            Verify & Login
+          </button>
         </div>
       </div>
     </div>
@@ -581,40 +694,626 @@
   </div>
 
   <script>
-    // GLOBAL STATE
-    let currentUser = {
-      phone: '9876543210',
-      name: 'Dhaneshwar Sahu',
-      wallet: 500,
-      role: 'Player'
+    // PLAYERS POOL WITH PLAYING STATUS INDICATOR
+    const playersPool = [
+      { id: 1, name: 'V. Kohli', role: 'BAT', team: 'IND', credits: 10.5, pts: 890, playing: true },
+      { id: 2, name: 'R. Sharma', role: 'BAT', team: 'IND', credits: 10.0, pts: 820, playing: true },
+      { id: 3, name: 'B. Azam', role: 'BAT', team: 'PAK', credits: 9.5, pts: 780, playing: true },
+      { id: 4, name: 'M. Rizwan', role: 'WK', team: 'PAK', credits: 9.5, pts: 760, playing: true },
+      { id: 5, name: 'KL Rahul', role: 'WK', team: 'IND', credits: 9.0, pts: 710, playing: false },
+      { id: 6, name: 'H. Pandya', role: 'AR', team: 'IND', credits: 9.5, pts: 850, playing: true },
+      { id: 7, name: 'S. Khan', role: 'AR', team: 'PAK', credits: 8.5, pts: 690, playing: false },
+      { id: 8, name: 'J. Bumrah', role: 'BOWL', team: 'IND', credits: 9.5, pts: 910, playing: true },
+      { id: 9, name: 'S. Afridi', role: 'BOWL', team: 'PAK', credits: 9.0, pts: 840, playing: true },
+      { id: 10, name: 'M. Siraj', role: 'BOWL', team: 'IND', credits: 8.5, pts: 670, playing: true },
+      { id: 11, name: 'H. Rauf', role: 'BOWL', team: 'PAK', credits: 8.5, pts: 650, playing: false },
+      { id: 12, name: 'S. Yadav', role: 'BAT', team: 'IND', credits: 9.0, pts: 790, playing: true }
+    ];
+
+    function toggleNotifications() {
+      const drop = document.getElementById('notif-dropdown');
+      drop.classList.toggle('hidden');
+    }
+
+    function renderPlayerList() {
+      const container = document.getElementById('player-list-container');
+      const players = playersPool.filter(p => p.role === currentRoleFilter);
+
+      container.innerHTML = players.map(p => {
+        const isSelected = selectedPlayers.includes(p.id);
+        return `
+          <div onclick="togglePlayerSelect(${p.id})" class="flex justify-between items-center p-3 rounded-xl border ${isSelected ? 'bg-amber-500/10 border-amber-500' : 'bg-slate-900 border-slate-800'} cursor-pointer">
+            <div>
+              <div class="flex items-center gap-1.5">
+                <p class="font-bold text-xs text-white">${p.name} <span class="text-[9px] text-gray-400">(${p.team})</span></p>
+                <span class="w-2 h-2 rounded-full ${p.playing ? 'bg-green-500' : 'bg-red-500'}" title="${p.playing ? 'Playing' : 'Not Playing'}"></span>
+              </div>
+              <p class="text-[10px] ${p.playing ? 'text-green-400' : 'text-red-400'} font-semibold">${p.playing ? '● Playing' : '○ Not Playing'}</p>
+            </div>
+            <div class="flex items-center space-x-3">
+              <span class="text-xs font-bold text-gray-300">${p.credits} Cr</span>
+              <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${isSelected ? 'bg-brand-gold text-slate-900' : 'bg-slate-800 text-gray-400'}">
+                ${isSelected ? '<i class="fa-solid fa-check"></i>' : '+'}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // OTP FLOW
+    let pendingPhone = '';
+    function openLoginModal() {
+      document.getElementById('login-phone-input').value = '';
+      document.getElementById('phone-error-msg').classList.add('hidden');
+      document.getElementById('otp-error-msg').classList.add('hidden');
+      document.getElementById('phone-stage').classList.remove('hidden');
+      document.getElementById('otp-stage').classList.add('hidden');
+      openModal('modal-login');
+    }
+
+    function sendOTP() {
+      const input = document.getElementById('login-phone-input');
+      const err = document.getElementById('phone-error-msg');
+      const phone = input.value.trim();
+
+      if (phone.length !== 10) {
+        err.innerText = 'Sahi 10-digit mobile number enter karein.';
+        err.classList.remove('hidden');
+        return;
+      }
+      pendingPhone = phone;
+      err.classList.add('hidden');
+      document.getElementById('phone-stage').classList.add('hidden');
+      document.getElementById('otp-stage').classList.remove('hidden');
+      showToast('OTP sent: 1234');
+    }
+
+    function verifyOTP() {
+      const boxes = document.querySelectorAll('.otp-box');
+      let otpVal = '';
+      boxes.forEach(b => otpVal += b.value);
+
+      if (otpVal.length < 4) {
+        const err = document.getElementById('otp-error-msg');
+        err.innerText = '4-digit OTP enter karein.';
+        err.classList.remove('hidden');
+        return;
+      }
+
+      currentUser.phone = pendingPhone;
+      document.getElementById('user-display-phone').innerText = '+91 ' + pendingPhone;
+      closeModal('modal-login');
+      showToast(`Logged in successfully with +91 ${pendingPhone}`);
+    }
+    ];
+
+    // DRAWER HELPER FUNCTIONS
+    function openSideDrawer() {
+      document.getElementById('side-drawer').classList.remove('hidden');
+    }
+
+    function closeSideDrawer() {
+      document.getElementById('side-drawer').classList.add('hidden');
+    }
+
+    function drawerNavigate(tabId) {
+      closeSideDrawer();
+      switchTab(tabId);
+    }
+
+    // INITIALIZATION
+    window.onload = function() {
+      renderMatches();
+      updateWalletUI();
     };
 
-    let selectedMatch = null;
-    let selectedContest = null;
-    let selectedPlayers = [];
-    let captainId = null;
-    let viceCaptainId = null;
+    // TAB NAVIGATION
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      const activeTab = document.getElementById('sec-' + tabId);
+      if (activeTab) activeTab.classList.remove('hidden');
 
-    // SAMPLE MATCHES DATA
-    const matchesData = [
-      {
-        id: 1,
-        t1: 'IND',
-        t1Flag: '🇮🇳',
-        t2: 'PAK',
-        t2Flag: '🇵🇰',
-        series: 'Asia T20 Cup',
-        time: 'Today, 7:30 PM',
-        prize: '₹10 Lakhs',
-        contests: [
-          { id: 101, entry: 49, prize: '₹5 Lakhs', maxSpots: 10000, joined: 6420, winners: '60%' },
-          { id: 102, entry: 29, prize: '₹2 Lakhs', maxSpots: 8000, joined: 4100, winners: '55%' },
-          { id: 103, entry: 10, prize: '₹50,000', maxSpots: 5000, joined: 4900, winners: '70%' }
-        ]
-      },
-      {
-        id: 2,
-        t1: 'AUS',
-        t1Flag: '🇦🇺',
-        t2: 'ENG',
-        t2Flag: '🏴
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.classList.remove('text-brand-red');
+        btn.classList.add('text-gray-400');
+      });
+
+      const activeNav = document.getElementById('nav-' + tabId);
+      if (activeNav) {
+        activeNav.classList.remove('text-gray-400');
+        activeNav.classList.add('text-brand-red');
+      }
+    }
+
+    // RENDER MATCHES
+    function renderMatches() {
+      const container = document.getElementById('matches-list');
+      container.innerHTML = matchesData.map(m => `
+        <div onclick="openContestPool(${m.id})" class="bg-brand-card hover:border-brand-gold border border-slate-700 rounded-2xl p-4 cursor-pointer transition transform active:scale-95 shadow-md">
+          <div class="flex justify-between items-center text-[10px] text-gray-400 font-bold border-b border-slate-800 pb-2 mb-3">
+            <span class="bg-slate-800 px-2 py-0.5 rounded-full text-slate-300">${m.series}</span>
+            <span class="text-brand-gold flex items-center gap-1"><i class="fa-solid fa-clock"></i> ${m.time}</span>
+          </div>
+          <div class="flex justify-between items-center px-2">
+            <div class="flex items-center space-x-2">
+              <span class="text-2xl">${m.t1Flag}</span>
+              <span class="font-black text-base text-white">${m.t1}</span>
+            </div>
+            <div class="text-center">
+              <span class="text-xs bg-red-600/30 text-red-400 font-bold px-2 py-1 rounded-full uppercase">VS</span>
+            </div>
+            <div class="flex items-center space-x-2">
+              <span class="font-black text-base text-white">${m.t2}</span>
+              <span class="text-2xl">${m.t2Flag}</span>
+            </div>
+          </div>
+          <div class="mt-3 pt-2 border-t border-slate-800/80 flex justify-between items-center text-xs">
+            <span class="text-gray-400">Mega Prize: <strong class="text-green-400">${m.prize}</strong></span>
+            <span class="text-amber-400 text-[11px] font-bold">Join Contests <i class="fa-solid fa-chevron-right text-[9px]"></i></span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // OPEN CONTEST POOL
+    function openContestPool(matchId) {
+      selectedMatch = matchesData.find(m => m.id === matchId);
+      document.getElementById('pool-match-title').innerText = `${selectedMatch.t1} vs ${selectedMatch.t2} (${selectedMatch.series})`;
+
+      const listContainer = document.getElementById('contest-pool-list');
+      listContainer.innerHTML = selectedMatch.contests.map(c => `
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-3 space-y-2">
+          <div class="flex justify-between items-center">
+            <div>
+              <p class="text-[10px] text-gray-400 uppercase font-semibold">Prize Pool</p>
+              <h4 class="text-base font-black text-white">${c.prize}</h4>
+            </div>
+            <button onclick="startTeamCreation(${c.id})" class="bg-green-600 hover:bg-green-500 text-white font-bold text-xs px-4 py-2 rounded-xl shadow">
+              ₹${c.entry} Join
+            </button>
+          </div>
+          <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
+            <div class="bg-amber-400 h-1.5 rounded-full" style="width: ${(c.joined / c.maxSpots) * 100}%"></div>
+          </div>
+          <div class="flex justify-between items-center text-[10px] text-gray-400">
+            <span>${c.maxSpots - c.joined} spots left</span>
+            <span>${c.winners} Winners</span>
+          </div>
+        </div>
+      `).join('');
+
+      openModal('modal-contest-pool');
+    }
+
+    // TEAM CREATION FLOW
+    function startTeamCreation(contestId) {
+      selectedContest = selectedMatch.contests.find(c => c.id === contestId);
+      selectedPlayers = [];
+      captainId = null;
+      viceCaptainId = null;
+
+      closeModal('modal-contest-pool');
+      openModal('modal-create-team');
+      
+      document.getElementById('captain-select-container').classList.add('hidden');
+      document.getElementById('player-list-container').classList.remove('hidden');
+      document.getElementById('btn-next-captain').classList.remove('hidden');
+      document.getElementById('btn-save-team').classList.add('hidden');
+
+      filterPlayerRole('WK');
+      updateTeamStats();
+    }
+
+    function filterPlayerRole(role) {
+      currentRoleFilter = role;
+      document.querySelectorAll('.role-tab').forEach(b => {
+        b.classList.remove('text-brand-gold', 'border-b-2', 'border-brand-gold');
+        b.classList.add('text-gray-400');
+      });
+      const activeTab = document.getElementById('tab-' + role.toLowerCase());
+      if (activeTab) {
+        activeTab.classList.remove('text-gray-400');
+        activeTab.classList.add('text-brand-gold', 'border-b-2', 'border-brand-gold');
+      }
+
+      renderPlayerList();
+    }
+
+    function renderPlayerList() {
+      const container = document.getElementById('player-list-container');
+      const players = playersPool.filter(p => p.role === currentRoleFilter);
+
+      container.innerHTML = players.map(p => {
+        const isSelected = selectedPlayers.includes(p.id);
+        return `
+          <div onclick="togglePlayerSelect(${p.id})" class="flex justify-between items-center p-3 rounded-xl border ${isSelected ? 'bg-amber-500/10 border-amber-500' : 'bg-slate-900 border-slate-800'} cursor-pointer">
+            <div>
+              <p class="font-bold text-xs text-white">${p.name} <span class="text-[9px] text-gray-400">(${p.team})</span></p>
+              <p class="text-[10px] text-gray-400">Pts: ${p.pts}</p>
+            </div>
+            <div class="flex items-center space-x-3">
+              <span class="text-xs font-bold text-gray-300">${p.credits} Cr</span>
+              <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${isSelected ? 'bg-brand-gold text-slate-900' : 'bg-slate-800 text-gray-400'}">
+                ${isSelected ? '<i class="fa-solid fa-check"></i>' : '+'}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function togglePlayerSelect(id) {
+      const idx = selectedPlayers.indexOf(id);
+      if (idx > -1) {
+        selectedPlayers.splice(idx, 1);
+      } else {
+        if (selectedPlayers.length >= 11) {
+          showToast('Aap max 11 players hi select kar sakte hain');
+          return;
+        }
+        selectedPlayers.push(id);
+      }
+      updateTeamStats();
+      renderPlayerList();
+    }
+
+    function updateTeamStats() {
+      document.getElementById('selected-count').innerText = selectedPlayers.length;
+      
+      let usedCredits = 0;
+      selectedPlayers.forEach(pid => {
+        const p = playersPool.find(x => x.id === pid);
+        if (p) usedCredits += p.credits;
+      });
+      document.getElementById('credits-left').innerText = (100.0 - usedCredits).toFixed(1);
+
+      ['WK', 'BAT', 'AR', 'BOWL'].forEach(r => {
+        const cnt = selectedPlayers.filter(pid => {
+          const p = playersPool.find(x => x.id === pid);
+          return p && p.role === r;
+        }).length;
+        document.getElementById('count-' + r.toLowerCase()).innerText = cnt;
+      });
+
+      const nextBtn = document.getElementById('btn-next-captain');
+      if (selectedPlayers.length === 11) {
+        nextBtn.disabled = false;
+        nextBtn.classList.remove('bg-gray-700', 'text-gray-400');
+        nextBtn.classList.add('bg-brand-red', 'text-white', 'hover:bg-brand-darkRed');
+      } else {
+        nextBtn.disabled = true;
+        nextBtn.classList.add('bg-gray-700', 'text-gray-400');
+        nextBtn.classList.remove('bg-brand-red', 'text-white', 'hover:bg-brand-darkRed');
+      }
+    }
+
+    function showCaptainSelection() {
+      document.getElementById('player-list-container').classList.add('hidden');
+      document.getElementById('captain-select-container').classList.remove('hidden');
+      document.getElementById('btn-next-captain').classList.add('hidden');
+      document.getElementById('btn-save-team').classList.remove('hidden');
+
+      const container = document.getElementById('captain-players-list');
+      const selectedObjList = selectedPlayers.map(pid => playersPool.find(x => x.id === pid));
+
+      container.innerHTML = selectedObjList.map(p => `
+        <div class="flex justify-between items-center p-3 bg-slate-900 border border-slate-800 rounded-xl text-xs">
+          <div>
+            <p class="font-bold text-white">${p.name}</p>
+            <p class="text-[10px] text-gray-400">${p.role} • ${p.team}</p>
+          </div>
+          <div class="flex gap-2">
+            <button onclick="setCaptain(${p.id})" class="w-8 h-8 rounded-full font-black ${captainId === p.id ? 'bg-amber-400 text-slate-950' : 'bg-slate-800 text-gray-400'}">C</button>
+            <button onclick="setViceCaptain(${p.id})" class="w-8 h-8 rounded-full font-black ${viceCaptainId === p.id ? 'bg-amber-400 text-slate-950' : 'bg-slate-800 text-gray-400'}">VC</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function setCaptain(id) {
+      if (viceCaptainId === id) viceCaptainId = null;
+      captainId = id;
+      showCaptainSelection();
+    }
+
+    function setViceCaptain(id) {
+      if (captainId === id) captainId = null;
+      viceCaptainId = id;
+      showCaptainSelection();
+    }
+
+    function confirmTeamAndJoin() {
+      if (!captainId || !viceCaptainId) {
+        showToast('Captain (C) aur Vice Captain (VC) dono select karein!');
+        return;
+      }
+
+      if (currentUser.wallet < selectedContest.entry) {
+        showToast('Insufficient Balance! Add Cash karein.');
+        closeModal('modal-create-team');
+        openAddCashModal();
+        return;
+      }
+
+      currentUser.wallet -= selectedContest.entry;
+      updateWalletUI();
+
+      joinedContestsList.push({
+        match: `${selectedMatch.t1} vs ${selectedMatch.t2}`,
+        entry: selectedContest.entry,
+        prize: selectedContest.prize,
+        time: selectedMatch.time
+      });
+
+      renderJoinedContests();
+      closeModal('modal-create-team');
+      confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
+      showToast('Contest successfully joined! Good Luck 🏏');
+      switchTab('contests');
+    }
+
+    function renderJoinedContests() {
+      const container = document.getElementById('joined-contests-list');
+      if (joinedContestsList.length === 0) return;
+
+      container.innerHTML = joinedContestsList.map(c => `
+        <div class="bg-brand-card border border-slate-700 rounded-2xl p-4 space-y-2">
+          <div class="flex justify-between items-center text-xs">
+            <span class="font-bold text-white">${c.match}</span>
+            <span class="bg-green-500/20 text-green-400 px-2 py-0.5 rounded-full font-bold text-[10px]">JOINED</span>
+          </div>
+          <div class="flex justify-between text-xs text-gray-400 border-t border-slate-800 pt-2">
+            <span>Entry Fee: <strong>₹${c.entry}</strong></span>
+            <span>Prize Pool: <strong class="text-green-400">${c.prize}</strong></span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // LOGIN & USER MOBILE VALIDATION (STRICT 10 DIGIT)
+    function openLoginModal() {
+      document.getElementById('login-phone-input').value = '';
+      document.getElementById('phone-error-msg').classList.add('hidden');
+      openModal('modal-login');
+    }
+
+    function validatePhoneInput(input) {
+      input.value = input.value.replace(/[^0-9]/g, '');
+    }
+
+    function submitLogin() {
+      const input = document.getElementById('login-phone-input');
+      const err = document.getElementById('phone-error-msg');
+      const phone = input.value.trim();
+
+      if (phone.length !== 10) {
+        err.innerText = 'Kripya sahi 10-digit mobile number enter karein.';
+        err.classList.remove('hidden');
+        return;
+      }
+
+      err.classList.add('hidden');
+      currentUser.phone = phone;
+      document.getElementById('user-display-phone').innerText = '+91 ' + phone;
+      closeModal('modal-login');
+      showToast(`Welcome back! Logged in with +91 ${phone}`);
+    }
+
+    // ROLE & HOST MANAGEMENT (3 OPTIONS)
+    function openRoleModal() {
+      openModal('modal-role-select');
+    }
+
+    function setRoleMode(role) {
+      currentUser.role = role;
+      document.getElementById('current-role-badge').innerText = role === 'HostRoom' ? 'Host Room' : role === 'HostAdmin' ? 'Host Admin' : 'Player';
+
+      const navHost = document.getElementById('nav-host');
+      if (role === 'HostRoom' || role === 'HostAdmin') {
+        navHost.classList.remove('hidden');
+        switchTab('host');
+      } else {
+        navHost.classList.add('hidden');
+        switchTab('fantasy');
+      }
+      closeModal('modal-role-select');
+      showToast(`Mode switched to: ${role}`);
+    }
+
+    function createHostRoom() {
+      const fee = document.getElementById('host-entry-fee').value;
+      const room = document.getElementById('host-room-name').value || 'Custom Room';
+      
+      if (!fee || fee <= 0) {
+        showToast('Valid Entry Fee enter karein!');
+        return;
+      }
+
+      const container = document.getElementById('hosted-rooms-list');
+      const newDiv = document.createElement('div');
+      newDiv.className = 'bg-slate-900 border border-slate-800 rounded-xl p-3 flex justify-between items-center text-xs';
+      newDiv.innerHTML = `
+        <div>
+          <p class="font-bold text-white">${room}</p>
+          <p class="text-[10px] text-gray-400">Entry: ₹${fee} • 1/${document.getElementById('host-max-players').value || 10} Joined</p>
+        </div>
+        <span class="bg-amber-500/20 text-amber-400 text-[10px] px-2 py-1 rounded-lg font-bold">Created</span>
+      `;
+      container.prepend(newDiv);
+      showToast('Custom Room successfully created!');
+    }
+
+    // ADD CASH MODAL & VALIDATION (5 QUICK OPTIONS)
+    function openAddCashModal() {
+      document.getElementById('cash-error-msg').classList.add('hidden');
+      openModal('modal-add-cash');
+    }
+
+    function setAddAmount(amt) {
+      document.getElementById('add-cash-input').value = amt;
+    }
+
+    function processAddCash() {
+      const input = document.getElementById('add-cash-input');
+      const err = document.getElementById('cash-error-msg');
+      const amt = parseInt(input.value);
+
+      if (isNaN(amt) || amt < 10 || amt > 10000) {
+        err.innerText = 'Amount Minimum ₹10 aur Maximum ₹10,000 honi chahiye.';
+        err.classList.remove('hidden');
+        return;
+      }
+
+      err.classList.add('hidden');
+      currentUser.wallet += amt;
+      updateWalletUI();
+
+      const txContainer = document.getElementById('tx-history');
+      const txDiv = document.createElement('div');
+      txDiv.className = 'flex justify-between items-center text-xs p-2 bg-slate-900/50 rounded-lg';
+      txDiv.innerHTML = `
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-arrow-down-left text-green-400"></i>
+          <span>Add Cash (UPI)</span>
+        </div>
+        <span class="text-green-400 font-bold">+₹${amt}</span>
+      `;
+      txContainer.prepend(txDiv);
+
+      closeModal('modal-add-cash');
+      confetti({ particleCount: 80, spread: 60 });
+      showToast(`₹${amt} successfully added to wallet!`);
+    }
+
+    function withdrawCash() {
+      openWithdrawModal();
+    }
+
+    function openWithdrawModal() {
+      switchTab('profile');
+      showToast('Bank details verify karke Withdraw request bhejein.');
+    }
+
+    function saveBankDetails() {
+      const upi = document.getElementById('upi-id-input').value;
+      const acc = document.getElementById('bank-acc-input').value;
+
+      if (!upi || !acc) {
+        showToast('Kripya UPI ID aur Bank Account Number poora bharein.');
+        return;
+      }
+      showToast('Bank details updated successfully!');
+    }
+
+    function updateWalletUI() {
+      document.getElementById('wallet-balance').innerText = currentUser.wallet;
+      document.getElementById('profile-wallet-balance').innerText = currentUser.wallet;
+    }
+
+    // MINI GAMES IMPLEMENTATION
+    function openGame(gameType) {
+      const modal = document.getElementById('modal-game');
+      const title = document.getElementById('game-modal-title');
+      const container = document.getElementById('game-container');
+      openModal('modal-game');
+
+      if (gameType === 'spin') {
+        title.innerText = 'Spin & Win Wheel';
+        container.innerHTML = `
+          <div class="flex flex-col items-center space-y-4">
+            <div class="relative w-64 h-64 border-4 border-brand-gold rounded-full flex items-center justify-center overflow-hidden bg-gradient-to-tr from-purple-900 to-indigo-900 shadow-2xl" id="wheel-box">
+              <div id="wheel-pointer" class="absolute top-0 text-brand-gold text-2xl z-20"><i class="fa-solid fa-caret-down"></i></div>
+              <p id="wheel-text" class="text-center font-black text-xl text-brand-gold">SPIN TO WIN</p>
+            </div>
+            <button onclick="spinWheelAction()" id="btn-spin" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-6 py-3 rounded-2xl text-sm shadow-xl">
+              SPIN WHEEL (Entry: Free)
+            </button>
+          </div>
+        `;
+      } else if (gameType === 'toss') {
+        title.innerText = 'Head or Tail Toss';
+        container.innerHTML = `
+          <div class="flex flex-col items-center space-y-5">
+            <div class="coin relative flex justify-center items-center" id="coin-element">
+              <div class="heads bg-amber-400 text-slate-900 border-4 border-amber-300 shadow-xl">H</div>
+              <div class="tails bg-slate-700 text-white border-4 border-slate-500 shadow-xl">T</div>
+            </div>
+            <div class="flex gap-4">
+              <button onclick="playToss('H')" class="bg-amber-500 hover:bg-amber-400 text-slate-950 font-black px-5 py-2.5 rounded-xl text-xs">CHOOSE HEAD</button>
+              <button onclick="playToss('T')" class="bg-slate-700 hover:bg-slate-600 text-white font-black px-5 py-2.5 rounded-xl text-xs">CHOOSE TAIL</button>
+            </div>
+            <p id="toss-result" class="text-xs font-bold text-gray-300"></p>
+          </div>
+        `;
+      } else if (gameType === 'memory') {
+        title.innerText = 'Memory Card Match';
+        container.innerHTML = `<div class="text-center space-y-3"><p class="text-xs text-gray-300">Cards milao aur 50 coins jeeto!</p><button onclick="showToast('Memory game coming soon in live server!')" class="bg-blue-600 px-4 py-2 rounded-xl text-xs font-bold">Start Memory Match</button></div>`;
+      } else if (gameType === 'tictactoe') {
+        title.innerText = 'Tic-Tac-Toe VS AI';
+        container.innerHTML = `<div class="text-center space-y-3"><p class="text-xs text-gray-300">Play Tic-Tac-Toe against Smart Bot!</p><button onclick="showToast('Tic-Tac-Toe mode initialized!')" class="bg-emerald-600 px-4 py-2 rounded-xl text-xs font-bold">Start Game</button></div>`;
+      }
+    }
+
+    function spinWheelAction() {
+      const btn = document.getElementById('btn-spin');
+      const wheelText = document.getElementById('wheel-text');
+      btn.disabled = true;
+
+      const prizes = [10, 20, 50, 100, 0];
+      const win = prizes[Math.floor(Math.random() * prizes.length)];
+
+      wheelText.innerText = 'Spinning...';
+      setTimeout(() => {
+        if (win > 0) {
+          wheelText.innerText = `Won ₹${win}!`;
+          currentUser.wallet += win;
+          updateWalletUI();
+          confetti({ particleCount: 90, spread: 60 });
+        } else {
+          wheelText.innerText = 'Better Luck Next Time!';
+        }
+        btn.disabled = false;
+      }, 2000);
+    }
+
+    function playToss(userChoice) {
+      const coin = document.getElementById('coin-element');
+      const resText = document.getElementById('toss-result');
+      const isHeads = Math.random() < 0.5;
+
+      coin.className = 'coin ' + (isHeads ? 'animate-flip-heads' : 'animate-flip-tails');
+      resText.innerText = 'Flipping Coin...';
+
+      setTimeout(() => {
+        const result = isHeads ? 'H' : 'T';
+        if (userChoice === result) {
+          resText.innerText = `Result: ${isHeads ? 'HEADS' : 'TAILS'}! You Won ₹20!`;
+          currentUser.wallet += 20;
+          updateWalletUI();
+          confetti({ particleCount: 70 });
+        } else {
+          resText.innerText = `Result: ${isHeads ? 'HEADS' : 'TAILS'}! You Lost.`;
+        }
+      }, 2000);
+    }
+
+    // MODAL HELPERS
+    function openModal(id) {
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.add('hidden');
+    }
+
+    // TOAST HELPER
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toast-msg').innerText = msg;
+      t.classList.remove('hidden');
+      setTimeout(() => t.classList.add('hidden'), 3000);
+    }
+  </script>
+</body>
+</html>
